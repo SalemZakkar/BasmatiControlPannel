@@ -15,11 +15,12 @@ class MyCustomCategoryWidget extends StatefulWidget {
 
 class _MyCustomCategoryWidgetState extends State<MyCustomCategoryWidget> {
   final ItemsBloc itemsBloc = ItemsBloc();
-  String calc(double price , double discount)
-  {
-    String old = (price + (( discount) * price / (1 - discount))).toStringAsFixed(2);
+  String calc(double price, double discount) {
+    String old =
+        (price - (price * discount)).toStringAsFixed(2);
     return old;
   }
+
   @override
   void initState() {
     super.initState();
@@ -91,22 +92,33 @@ class _MyCustomCategoryWidgetState extends State<MyCustomCategoryWidget> {
           Expanded(
             child: Row(
               children: [
+                (widget.data.discount!.toDouble() == 0
+                    ? Text(widget.data.price!.toStringAsFixed(2),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline1!
+                            .copyWith(fontSize: 15))
+                    : const SizedBox()),
                 (widget.data.discount?.toDouble() == 0
                     ? const SizedBox()
                     : Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: Text(
-                          calc(widget.data.price!.toDouble(), widget.data.discount!.toDouble()),
+                          widget.data.price.toString(),
                           style: const TextStyle(
                               color: Colors.red,
                               decoration: TextDecoration.lineThrough),
                         ),
                       )),
-                Text(widget.data.price?.toStringAsFixed(2) ?? "n/a",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline1!
-                        .copyWith(fontSize: 15)),
+                widget.data.discount?.toDouble() != 0
+                    ? Text(
+                        calc(widget.data.price!.toDouble(),
+                            widget.data.discount!.toDouble()),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline1!
+                            .copyWith(fontSize: 15))
+                    : const SizedBox(),
                 const SizedBox(
                   width: 4,
                 ),
