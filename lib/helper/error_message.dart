@@ -13,16 +13,17 @@ String errorParse(String codeError) {
       return "هاتف مصادقة غير صالح أو رمز.";
     case "0625":
       // return "Can not access because account is not verified.";
-      return "لا يمكن الوصول لأنه لم يتم التحقق من الحساب.";
+      return "يرجى استكمال عملية التحقق";
     case "0626":
       // return "Can not access because account has been deactivated.";
-      return "لا يمكن الوصول لأنه تم إلغاء تنشيط الحساب.";
+      return "تم حظر حسابك";
     case "0627":
       // return "User profile is incomplete.";
       return "ملف تعريف المستخدم غير مكتمل.";
+
     case "0660":
       // return "Invalid old password.";
-      return "كلمة مرور قديمة غير صالحة.";
+      return "كلمة مرور قديمة غير صحيحة.";
     case "0661":
       // return "Account already verified.";
       return "الحساب تم التحقق منه بالفعل.";
@@ -55,10 +56,10 @@ String errorParse(String codeError) {
       return "خطأ في البيانات";
     case "1101":
       // return "User not found.";
-      return "المستخدم ليس موجود.";
+      return "المستخدم غير موجود.";
     case "1102":
       // return "Invalid validation code.";
-      return "رمز التحقق من الفاعلية غير صالح.";
+      return "رمز التحقق غير صحيح.";
     case "1103":
       // return "Supervisor not found.";
       return "المشرف غير موجود.";
@@ -68,8 +69,15 @@ String errorParse(String codeError) {
     case "1201":
       // return "Product not found.";
       return "الصنف غير موجود.";
+    case "0620":
+      return "ليس لديك اذن";
+    case "0640":
+      return "ليس لديك اذن";
+    case "0301":
+      return "المعلومات موجودة مسبقا";
+
     default:
       // return "Please again later...";
-      return "...الرجاء المحاولة لاحقا";
+      return "الرجاء المحاولة لاحقا...";
   }
 }

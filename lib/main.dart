@@ -21,14 +21,14 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Basmati Control Panel',
       theme: lightTheme,
-      home:  const Splash(),
+      home: const Splash(),
       onGenerateRoute: AppRouter.onGenerateRoute,
       builder: (context, child) {
         final MediaQueryData data = MediaQuery.of(context);

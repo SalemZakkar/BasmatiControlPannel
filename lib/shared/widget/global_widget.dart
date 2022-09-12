@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../helper/helper_export.dart';
+import '../../helper/helper_export.dart';
 
 bool dialogRunning = false;
 GlobalKey key = GlobalKey();

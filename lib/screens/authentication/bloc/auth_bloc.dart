@@ -31,11 +31,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         AuthStore.setToken(TokenData.fromJson(jsonDecode(res.data)));
         emit(AuthSuccess());
       } else {
-        ErrorData errorData = jsonDecode(res.data);
+        ErrorData errorData = ErrorData.fromJson(jsonDecode(res.data));
         emit(AuthError(code: errorData.code ?? "999"));
       }
     } on DioError catch (e) {
-      if (e.error is SocketException || e.type == DioErrorType.connectTimeout || e.type.index == 3) {
+      if (e.error is SocketException ||
+          e.type == DioErrorType.connectTimeout ||
+          e.type.index == 3) {
         emit(const AuthError(code: "7"));
       } else {
         emit(const AuthError(code: "999"));

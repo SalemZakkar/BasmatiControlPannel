@@ -16,8 +16,7 @@ class MyCustomCategoryWidget extends StatefulWidget {
 class _MyCustomCategoryWidgetState extends State<MyCustomCategoryWidget> {
   final ItemsBloc itemsBloc = ItemsBloc();
   String calc(double price, double discount) {
-    String old =
-        (price - (price * discount)).toStringAsFixed(2);
+    String old = (price - (price * discount)).toStringAsFixed(2);
     return old;
   }
 
@@ -82,47 +81,62 @@ class _MyCustomCategoryWidgetState extends State<MyCustomCategoryWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              (widget.data.isActive!
+                  ? const Padding(
+                      padding: EdgeInsets.only(top: 3, left: 3),
+                      child: Icon(
+                        Icons.circle,
+                        size: 12,
+                        color: Colors.green,
+                      ),
+                    )
+                  : const SizedBox()),
               Text(
                 widget.data.name ?? "n/a",
                 style: Theme.of(context).textTheme.headline2,
                 textScaleFactor: 0.8,
               ),
+              const Spacer(),
+              (widget.data.isSpecial!
+                  ? const Padding(
+                      padding: EdgeInsets.only(top: 3, left: 3),
+                      child: Icon(
+                        Icons.star,
+                        size: 20,
+                        color: Colors.yellow,
+                      ),
+                    )
+                  : const SizedBox())
             ],
           ),
           Expanded(
             child: Row(
               children: [
-                (widget.data.discount!.toDouble() == 0
-                    ? Text(widget.data.price!.toStringAsFixed(2),
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline1!
-                            .copyWith(fontSize: 15))
-                    : const SizedBox()),
-                (widget.data.discount?.toDouble() == 0
-                    ? const SizedBox()
-                    : Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          widget.data.price.toString(),
-                          style: const TextStyle(
-                              color: Colors.red,
-                              decoration: TextDecoration.lineThrough),
-                        ),
-                      )),
-                widget.data.discount?.toDouble() != 0
-                    ? Text(
-                        calc(widget.data.price!.toDouble(),
-                            widget.data.discount!.toDouble()),
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline1!
-                            .copyWith(fontSize: 15))
-                    : const SizedBox(),
+                // (widget.data.price!.toDouble() == 0
+                //     ? Text(widget.data.price!.toStringAsFixed(2),
+                //         style: Theme.of(context)
+                //             .textTheme
+                //             .headline1!
+                //             .copyWith(fontSize: 15))
+                //     : const SizedBox()),
+                //
+                // const SizedBox(
+                //   width: 4,
+                // ),
+                Text(widget.data.fullPrice!.toStringAsFixed(2),
+                    style: Theme.of(context).textTheme.headline1!.copyWith(
+                        fontSize: 15,
+                        color: Colors.red,
+                        decoration: TextDecoration.lineThrough)),
                 const SizedBox(
                   width: 4,
                 ),
-                Text('ر.س ',
+                Text(widget.data.price!.toStringAsFixed(2),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline1!
+                        .copyWith(fontSize: 15)),
+                Text(' ر.س ',
                     style: Theme.of(context)
                         .textTheme
                         .headline1!

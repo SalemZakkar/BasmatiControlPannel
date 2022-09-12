@@ -1,6 +1,5 @@
 part of 'shared_bloc.dart';
 
-
 abstract class SharedEvent {}
 
 class RemoveEvent extends SharedEvent {

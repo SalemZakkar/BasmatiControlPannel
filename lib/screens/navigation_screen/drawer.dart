@@ -143,7 +143,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           InkWell(
             onTap: () async {
               AuthCore.logout();
-              Navigator.pushNamedAndRemoveUntil(context, AuthenticationScreen.routeName, (route) => false);
+              Navigator.pushNamedAndRemoveUntil(
+                  context, AuthenticationScreen.routeName, (route) => false);
             },
             child: Container(
               padding: const EdgeInsets.only(right: 15),
@@ -153,8 +154,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               alignment: Alignment.centerRight,
               child: Text(
                 "تسجيل الخروج",
-                style:
-                    Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 19),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1!
+                    .copyWith(fontSize: 19),
               ),
             ),
           ),

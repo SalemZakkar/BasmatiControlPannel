@@ -1,1 +1,1 @@
-export '../items/model/my_custom_category_widget.dart';
+export '../items/widget/my_custom_category_widget.dart';

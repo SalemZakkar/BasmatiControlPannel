@@ -5,11 +5,9 @@ import 'package:web_basmati/screens/items/add_item.dart';
 import 'package:web_basmati/screens/items/bloc/items_bloc.dart';
 import 'package:web_basmati/screens/items/manage_item.dart';
 import 'package:web_basmati/screens/navigation_screen/drawer.dart';
-import 'package:web_basmati/widgets/error.dart';
-import 'package:web_basmati/widgets/no_network.dart';
-import '../../helper/error_message.dart';
 import '../../helper/helper_export.dart';
-import '../../widgets/text_field_holder.dart';
+import '../../shared/widget/error_notification.dart';
+import '../../shared/widget/text_field_holder.dart';
 import '../home/home_exports.dart';
 import 'model/get_items_model.dart';
 
@@ -271,12 +269,11 @@ class _ItemsScreenState extends State<ItemsScreen> {
 
           /// Grid View For Items
           BlocConsumer<ItemsBloc, ItemsState>(
-            bloc:itemsBloc ,
+            bloc: itemsBloc,
             listener: (context, state) {
-              if(state is! GetItemDetailsSuccess)
-                {
-                  reset();
-                }
+              if (state is! GetItemDetailsSuccess) {
+                reset();
+              }
               if (state is ItemsLoading) {
                 setState(() {
                   loading = true;
@@ -297,7 +294,8 @@ class _ItemsScreenState extends State<ItemsScreen> {
             },
             builder: (context, state) {
               if (state is ItemsFail) {
-                return Expanded(child: errorNotification(context , errorParse(state.code) , (){
+                return Expanded(
+                    child: errorNotification(context, state.code, () {
                   itemsBloc.add(ItemGetEvent(skip: "0", limit: "10"));
                 }));
               }
@@ -322,7 +320,9 @@ class _ItemsScreenState extends State<ItemsScreen> {
                                   stateID: "732456",
                                   data: "show category",
                                   isSuccess: true);
-                              Navigator.pushNamed(context, ManageItem.routeName , arguments: ManageItem(id: items[index].id ?? ""));
+                              Navigator.pushNamed(context, ManageItem.routeName,
+                                  arguments:
+                                      ManageItem(id: items[index].id ?? ""));
                             },
                             child: MyCustomCategoryWidget(
                               data: items[index],

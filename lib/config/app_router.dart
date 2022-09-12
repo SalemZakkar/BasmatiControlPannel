@@ -25,7 +25,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const AddItem());
       case ManageItem.routeName:
         ManageItem data = routeSettings.arguments as ManageItem;
-        return MaterialPageRoute(builder: (_) =>  ManageItem(id: data.id,));
+        return MaterialPageRoute(
+            builder: (_) => ManageItem(
+                  id: data.id,
+                ));
       case AppInfoScreen.routeName:
         return MaterialPageRoute(builder: (_) => const AppInfoScreen());
       default:

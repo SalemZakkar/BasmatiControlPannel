@@ -9,7 +9,7 @@ class RemoveItemEvent extends ItemsEvent {
 }
 
 class ItemAddEvent extends ItemsEvent {
-  final ItemModel itemModel;
+  final ItemDetailsModel itemModel;
   List<Uint8List> bytes;
 
   ItemAddEvent({required this.itemModel, required this.bytes});
@@ -47,7 +47,7 @@ class GetItemImage extends ItemsEvent {
   GetItemImage({required this.id});
 }
 
-class UpdateProductEvent  extends ItemsEvent {
+class UpdateProductEvent extends ItemsEvent {
   final ItemDetailsModel itemDetailsModel;
   UpdateProductEvent({required this.itemDetailsModel});
 }
@@ -55,7 +55,7 @@ class UpdateProductEvent  extends ItemsEvent {
 class UploadImageEvent extends ItemsEvent {
   final String id;
   final Uint8List bytes;
-  UploadImageEvent({required this.id , required this.bytes});
+  UploadImageEvent({required this.id, required this.bytes});
 }
 
 class DeleteEvent extends ItemsEvent {
@@ -66,11 +66,10 @@ class DeleteEvent extends ItemsEvent {
 class DeleteImageEvent extends ItemsEvent {
   final String id;
   final String itemId;
-  DeleteImageEvent({required this.id , required this.itemId});
+  DeleteImageEvent({required this.id, required this.itemId});
 }
 
 class Deactivate extends ItemsEvent {
   final String id;
   Deactivate({required this.id});
-
 }

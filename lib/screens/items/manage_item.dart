@@ -5,13 +5,12 @@ import 'package:web_basmati/helper/error_message.dart';
 import 'package:web_basmati/screens/items/items_screen.dart';
 import 'package:web_basmati/screens/items/model/item_details_model.dart';
 import 'package:web_basmati/screens/items/widget/manage_item_image.dart';
-import 'package:web_basmati/widgets/confirm_dialog.dart';
-import 'package:web_basmati/widgets/flush_messages.dart';
-import 'package:web_basmati/widgets/text_field_holder.dart';
-
 import '../../helper/validator.dart';
-import '../../widgets/custom_button_widget.dart';
-import '../../widgets/no_network.dart';
+import '../../shared/widget/confirm_dialog.dart';
+import '../../shared/widget/custom_button_widget.dart';
+import '../../shared/widget/flush_messages.dart';
+import '../../shared/widget/error_notification.dart';
+import '../../shared/widget/text_field_holder.dart';
 import 'bloc/items_bloc.dart';
 
 class ManageItem extends StatefulWidget {
@@ -45,7 +44,7 @@ class _AddItemState extends State<ManageItem> {
   void refresh() {
     itemsBloc = ItemsBloc();
     imagesBloc = ItemsBloc();
-    deleteBloc = ItemsBloc();
+    // deleteBloc = ItemsBloc();
   }
 
   void pickFile() async {
@@ -77,10 +76,10 @@ class _AddItemState extends State<ManageItem> {
           BlocListener<ItemsBloc, ItemsState>(
             bloc: deleteBloc,
             listener: (context, state) {
-              if(state is ItemsFail)
-                {
-                  showErrorMessageFlush(context, errorParse(state.code), state.code);
-                }
+              if (state is ItemsFail) {
+                showErrorMessageFlush(
+                    context, errorParse(state.code), state.code);
+              }
               if (state is ItemSuccess) {
                 Navigator.pushNamedAndRemoveUntil(
                     context, ItemsScreen.routeName, (route) => false);
@@ -125,7 +124,7 @@ class _AddItemState extends State<ManageItem> {
             }
           }
           if (state is ItemsFail) {
-            return errorNotification(context, errorParse(state.code), () {
+            return errorNotification(context, state.code, () {
               context.read<ItemsBloc>().add(ItemGetDetails(id: widget.id));
             });
           } else if (state is ItemsLoading) {
@@ -139,13 +138,12 @@ class _AddItemState extends State<ManageItem> {
               itemDes = TextEditingController(
                   text: state.itemDetailsModel.data!.description!);
               price = TextEditingController(
-                  text: state.itemDetailsModel.data!.price!.toString());
-              if (state.itemDetailsModel.data?.description != null &&
-                  state.itemDetailsModel.data!.discount!.toDouble() > 0) {
-                old = TextEditingController(
-                    text: (state.itemDetailsModel.data!.discount! * 100)
-                        .toStringAsFixed(2));
-              }
+                  text: state.itemDetailsModel.data!.fullPrice!
+                      .toStringAsFixed(2));
+              old = TextEditingController(
+                  text:
+                      (state.itemDetailsModel.data!.price!.toStringAsFixed(2)));
+
               images = state.itemDetailsModel.data?.images ?? [];
               active = state.itemDetailsModel.data?.isActive ?? false;
               fav = state.itemDetailsModel.data?.isSpecial ?? false;
@@ -243,7 +241,7 @@ class _AddItemState extends State<ManageItem> {
                                 .add(ItemGetDetails(id: widget.id));
                           }
                           if (state is ItemsFail) {
-           //                 showErrorMessageFlush(context, errorParse(state.code), state.code);
+                            //                 showErrorMessageFlush(context, errorParse(state.code), state.code);
                             setState(() {
                               imageErrorText = errorParse(state.code);
                               imageError = true;
@@ -324,7 +322,7 @@ class _AddItemState extends State<ManageItem> {
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width * 0.9,
-                        height: 200,
+                        height: 250,
                         alignment: Alignment.centerRight,
                         color: Theme.of(context).scaffoldBackgroundColor,
                         child: ListTile(
@@ -339,7 +337,7 @@ class _AddItemState extends State<ManageItem> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               TextFieldHolder(
-                                  height: 130,
+                                  height: 200,
                                   width:
                                       MediaQuery.of(context).size.width * 0.8,
                                   child: TextFormField(
@@ -479,10 +477,12 @@ class _AddItemState extends State<ManageItem> {
                                     height: 70,
                                     child: TextFormField(
                                       controller: price,
+                                      textAlign: TextAlign.start,
+                                      textDirection: TextDirection.ltr,
                                       validator: (value) {
                                         if (!Validator.checkPrice(
                                             value ?? "")) {
-                                          return "السعر غير صالح";
+                                          return "السعر غير صحيح";
                                         }
                                         return null;
                                       },
@@ -496,7 +496,7 @@ class _AddItemState extends State<ManageItem> {
                             width: 180,
                             child: ListTile(
                                 title: Text(
-                                  "نسبة التخفيض",
+                                  "السعر المخفض",
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline1!
@@ -509,6 +509,8 @@ class _AddItemState extends State<ManageItem> {
                                     height: 70,
                                     child: TextFormField(
                                       controller: old,
+                                      textAlign: TextAlign.start,
+                                      textDirection: TextDirection.ltr,
                                       validator: (value) {
                                         if (value == null) {
                                           return null;
@@ -518,18 +520,13 @@ class _AddItemState extends State<ManageItem> {
                                             return null;
                                           }
                                         }
-                                        if (Validator.checkPrice(value) &&
-                                            (double.parse(value) == 0 ||
-                                                double.parse(value) >= 100)) {
-                                          return "بين ال 0 وال 100";
-                                        }
                                         if (!Validator.checkPrice(value)) {
-                                          return "النسبة غير صحيحة";
+                                          return "السعر غير صحيح";
                                         }
                                         return null;
                                       },
                                       decoration: const InputDecoration(
-                                          hintText: 'إختياري (من 100)'),
+                                          hintText: 'إختياري'),
                                     ),
                                   ),
                                 )),
@@ -630,9 +627,10 @@ class _AddItemState extends State<ManageItem> {
                                                           name: itemName.text,
                                                           description:
                                                               itemDes.text,
-                                                          price: double.parse(
-                                                              price.text),
-                                                          discount:
+                                                          fullPrice:
+                                                              double.parse(
+                                                                  price.text),
+                                                          price:
                                                               double.tryParse(
                                                                   old.text),
                                                           images: images,

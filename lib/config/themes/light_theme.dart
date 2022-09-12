@@ -9,9 +9,7 @@ ThemeData lightTheme = ThemeData(
       builders: {TargetPlatform.windows: SlideHorizontalTransitionBuilder()}),
   primaryColor: primaryColor,
   primarySwatch: Colors.blue,
-  progressIndicatorTheme: ProgressIndicatorThemeData(
-    color: primaryColor
-  ),
+  progressIndicatorTheme: ProgressIndicatorThemeData(color: primaryColor),
   appBarTheme: AppBarTheme(
     titleTextStyle: TextStyle(
         color: primaryColor,
@@ -34,6 +32,7 @@ ThemeData lightTheme = ThemeData(
     hintStyle: const TextStyle(color: Colors.grey),
     filled: true,
     fillColor: Colors.white,
+
     contentPadding: const EdgeInsets.all(10),
     enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),

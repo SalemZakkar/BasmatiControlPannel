@@ -11,7 +11,6 @@ import 'package:web_basmati/helper/error_data.dart';
 import 'package:web_basmati/screens/authentication/persistance/storage.dart';
 import 'package:web_basmati/screens/items/model/get_items_model.dart';
 import 'package:web_basmati/screens/items/model/item_details_model.dart';
-import 'package:web_basmati/screens/items/model/item_model.dart';
 import 'package:web_basmati/web_services/web_services_export.dart';
 
 part 'items_event.dart';
@@ -40,7 +39,19 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
   _addItem(ItemAddEvent event, Emitter<ItemsState> emit) async {
     emit(ItemsLoading());
     try {
+      emit(ItemsLoading());
       List<MultipartFile> files = [];
+      // List<ImageFile> file = [];
+      // List<Uint8List> bytes = [];
+      // Configuration configuration =
+      //     const Configuration(outputType: ImageOutputType.jpg, quality: 50);
+      // for (int i = 0; i < event.bytes.length; i++) {
+      //   file.add(ImageFile(filePath: "filePath", rawBytes: event.bytes[i]));
+      //   ImageFile compressed = await compressor.compress(
+      //       ImageFileConfiguration(input: file[i], config: configuration));
+      //   bytes.add(compressed.rawBytes);
+      //}
+
       for (int i = 0; i < event.bytes.length; i++) {
         files.add(MultipartFile.fromBytes(event.bytes[i],
             filename: "$i", contentType: MediaType.parse("image/jpeg")));
@@ -49,12 +60,11 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
         "name": event.itemModel.data?.name!.trim(),
         "description": event.itemModel.data?.description!.trim(),
         "price": event.itemModel.data?.price,
-        "images": files
+        "images": files,
+        "isActive": event.itemModel.data!.isActive,
+        "isSpecial": event.itemModel.data!.isSpecial,
+        "fullPrice": event.itemModel.data!.fullPrice
       });
-      if (event.itemModel.data?.discount != null) {
-        double discount = event.itemModel.data!.discount!.toDouble() / 100;
-        formData.fields.add(MapEntry("discount", discount.toString()));
-      }
 
       String token = await AuthStore.getToken() ?? "";
       Response res = await myDio.post(EndPoints.item,
@@ -67,13 +77,16 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
         emit(ItemSuccess());
       } else {
         ErrorData errorData = ErrorData.fromJson(jsonDecode(res.data));
-        emit(ItemsFail(code: errorData.code ?? "777"));
+        emit(ItemsFail(code: errorData.code ?? "999"));
       }
     } on DioError catch (e) {
-      if (e.error is SocketException || e.type == DioErrorType.connectTimeout || e.type.index == 3 ) {
+      if (e.error is SocketException ||
+          e.type == DioErrorType.connectTimeout ||
+          e.message == xmlError) {
         emit(ItemsFail(code: "7"));
       } else {
         debugPrint(e.toString());
+        emit(ItemsFail(code: "999"));
       }
     } catch (e) {
       emit(ItemsFail(code: "999"));
@@ -93,9 +106,10 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
         emit(ItemsFail(code: error.code ?? "999"));
       }
     } on DioError catch (e) {
-      if (e.error is SocketException || e.type == DioErrorType.connectTimeout || e.type.index == 3) {
+      if (e.error is SocketException ||
+          e.type == DioErrorType.connectTimeout ||
+          e.message == xmlError) {
         emit(ItemsFail(code: "7"));
-
       } else {
         emit(ItemsFail(code: "999"));
       }
@@ -116,7 +130,9 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
         emit(ItemsFail(code: error.code ?? "999"));
       }
     } on DioError catch (e) {
-      if (e.error is SocketException || e.type == DioErrorType.connectTimeout || e.type.index == 3) {
+      if (e.error is SocketException ||
+          e.type == DioErrorType.connectTimeout ||
+          e.message == xmlError) {
         emit(ItemsFail(code: "7"));
       } else {
         emit(ItemsFail(code: "999"));
@@ -138,7 +154,9 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
         emit(ItemsFail(code: errorData.code ?? "999"));
       }
     } on DioError catch (e) {
-      if (e.error is SocketException || e.type == DioErrorType.connectTimeout || e.type.index == 3 ) {
+      if (e.error is SocketException ||
+          e.type == DioErrorType.connectTimeout ||
+          e.message == xmlError) {
         emit(ItemsFail(code: "7"));
       } else {
         debugPrint(e.toString());
@@ -159,7 +177,9 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
         emit(ItemsFail(code: errorData.code ?? "999"));
       }
     } on DioError catch (e) {
-      if (e.error is SocketException || e.type == DioErrorType.connectTimeout || e.type.index == 3) {
+      if (e.error is SocketException ||
+          e.type == DioErrorType.connectTimeout ||
+          e.message == xmlError) {
         emit(ItemsFail(code: "7"));
       } else {
         emit(ItemsFail(code: "999"));
@@ -173,6 +193,12 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
     // print('\n\n\n\n\n\n\n\n\n\n\n-------------------------------->/ n');
     try {
       emit(ItemsLoading());
+      // Configuration configuration =
+      //     const Configuration(outputType: ImageOutputType.jpg, quality: 50);
+      // ImageFile file = ImageFile(filePath: "filePath", rawBytes: event.bytes);
+      // ImageFile compressed = await compressor
+      //     .compress(ImageFileConfiguration(input: file, config: configuration));
+      // Uint8List bytes = compressed.rawBytes;
       MultipartFile multipartFile = MultipartFile.fromBytes(event.bytes,
           filename: "1", contentType: MediaType.parse("image/jpeg"));
       Response res = await ItemsCore.uploadImage(event.id, multipartFile);
@@ -183,7 +209,9 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
         emit(ItemsFail(code: errorData.code ?? "999"));
       }
     } on DioError catch (e) {
-      if (e.error is SocketException || e.type == DioErrorType.connectTimeout || e.type.index == 3) {
+      if (e.error is SocketException ||
+          e.type == DioErrorType.connectTimeout ||
+          e.message == xmlError) {
         emit(ItemsFail(code: "7"));
       } else {
         emit(ItemsFail(code: "999"));
@@ -196,7 +224,7 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
   _deleteImage(DeleteImageEvent event, Emitter<ItemsState> emit) async {
     try {
       emit(ItemsLoading());
-      Response res = await ItemsCore.deleteImage(event.id , event.itemId);
+      Response res = await ItemsCore.deleteImage(event.id, event.itemId);
       if (res.statusCode == 200 || res.statusCode == 204) {
         emit(ItemSuccess());
       } else {
@@ -204,7 +232,9 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
         emit(ItemsFail(code: errorData.code ?? "999"));
       }
     } on DioError catch (e) {
-      if (e.error is SocketException || e.type == DioErrorType.connectTimeout || e.type.index == 3) {
+      if (e.error is SocketException ||
+          e.type == DioErrorType.connectTimeout ||
+          e.message == xmlError) {
         emit(ItemsFail(code: "7"));
       } else {
         emit(ItemsFail(code: "999"));
@@ -213,19 +243,23 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
       emit(ItemsFail(code: "999"));
     }
   }
-  _deleteProduct(DeleteEvent event , Emitter<ItemsState> emit) async
-  {
+
+  _deleteProduct(DeleteEvent event, Emitter<ItemsState> emit) async {
     emit(ItemsLoading());
-    try{
+    try {
       Response res = await ItemsCore.deleteProduct(event.id);
-      if(res.statusCode == 200 || res.statusCode ==201 || res.statusCode == 204){
+      if (res.statusCode == 200 ||
+          res.statusCode == 201 ||
+          res.statusCode == 204) {
         emit(ItemSuccess());
-      }else{
+      } else {
         ErrorData errorData = ErrorData.fromJson(jsonDecode(res.data));
         emit(ItemsFail(code: errorData.code ?? "999"));
       }
     } on DioError catch (e) {
-      if (e.error is SocketException || e.type == DioErrorType.connectTimeout || e.type.index == 3) {
+      if (e.error is SocketException ||
+          e.type == DioErrorType.connectTimeout ||
+          e.message == xmlError) {
         emit(ItemsFail(code: "7"));
       } else {
         emit(ItemsFail(code: "999"));
@@ -235,3 +269,5 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
     }
   }
 }
+
+String xmlError = "XMLHttpRequest error.";

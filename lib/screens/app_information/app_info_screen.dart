@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:web_basmati/screens/navigation_screen/drawer.dart';
-import 'package:web_basmati/widgets/text_field_holder.dart';
 
-import '../../widgets/custom_button_widget.dart';
+import '../../shared/widget/custom_button_widget.dart';
+import '../../shared/widget/text_field_holder.dart';
 
 class AppInfoScreen extends StatefulWidget {
   const AppInfoScreen({Key? key}) : super(key: key);

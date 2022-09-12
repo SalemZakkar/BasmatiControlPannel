@@ -24,6 +24,7 @@ class AuthCore {
     }));
     return res;
   }
+
   static void logout() async {
     await AuthStore.clear();
   }

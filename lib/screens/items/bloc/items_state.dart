@@ -24,8 +24,6 @@ class ItemsFail extends ItemsState {
   ItemsFail({required this.code});
 }
 
-
-
 class ItemSuccess extends ItemsState {}
 
 class GetItemSuccess extends ItemsState {

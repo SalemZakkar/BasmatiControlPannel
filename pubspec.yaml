@@ -47,11 +47,12 @@ dependencies:
   dio: ^4.0.6
   url_launcher: ^6.1.5
   internet_connection_checker: ^0.0.1+4
-  reorderable_grid: ^1.0.4
+  auto_direction: ^0.0.6
   file_picker: ^5.0.1
   http_parser: ^4.0.1
   another_flushbar: ^1.12.29
-
+  image_compression_flutter: ^1.0.2
+  web_directional_text_field: ^0.0.6
 
 dev_dependencies:
   flutter_test:

@@ -51,12 +51,14 @@ class AuthStore {
     printLog(stateID: "AuthStorageGetPhone", data: [token], isSuccess: true);
     return token;
   }
+
   static Future<void> clear() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.remove("phone");
     sharedPreferences.remove("pass");
     sharedPreferences.remove("refreshToken");
     sharedPreferences.remove("token");
-    printLog(stateID: "AuthStorageClear", data: "Clear -- Logout", isSuccess: true);
+    printLog(
+        stateID: "AuthStorageClear", data: "Clear -- Logout", isSuccess: true);
   }
 }

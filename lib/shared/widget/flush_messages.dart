@@ -1,9 +1,9 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
-void showErrorMessageFlush(BuildContext context , String message , String code){
+void showErrorMessageFlush(BuildContext context, String message, String code) {
   Flushbar(
-    title:  "حدث خطأ  " "($code)",
+    title: "حدث خطأ  " "($code)",
     backgroundColor: Theme.of(context).errorColor,
     flushbarPosition: FlushbarPosition.BOTTOM,
     borderRadius: BorderRadius.circular(25),
@@ -12,6 +12,7 @@ void showErrorMessageFlush(BuildContext context , String message , String code){
     duration: const Duration(seconds: 3),
     flushbarStyle: FlushbarStyle.FLOATING,
     maxWidth: 300,
-    margin: EdgeInsets.only(left: MediaQuery.of(context).size.width - 330 , bottom: 5),
+    margin: EdgeInsets.only(
+        left: MediaQuery.of(context).size.width - 330, bottom: 5),
   ).show(context);
 }

@@ -72,10 +72,7 @@ class ItemsCore {
     form["price"] = data.data?.price;
     form["isSpecial"] = data.data?.isSpecial;
     form["isActive"] = data.data?.isActive;
-    if (data.data?.discount != null) {
-      form["discount"] =
-          (data.data!.discount!.toDouble() / 100).toStringAsFixed(2);
-    }
+    form["fullPrice"] = data.data?.fullPrice;
     Response res = await myDio.patch("${EndPoints.item}/${data.data!.id}",
         data: form,
         options: Options(
@@ -94,18 +91,19 @@ class ItemsCore {
     return res;
   }
 
-  static Future<Response> deleteImage(String id , String itemId) async {
+  static Future<Response> deleteImage(String id, String itemId) async {
     String token = await AuthStore.getToken() ?? "";
     Response res = await myDio.delete("${EndPoints.item}/$itemId/$id",
-        options:
-            Options(headers: {HttpHeaders.authorizationHeader: "Bearer $token"}));
+        options: Options(
+            headers: {HttpHeaders.authorizationHeader: "Bearer $token"}));
     return res;
   }
+
   static Future<Response> deleteProduct(String id) async {
     String token = await AuthStore.getToken() ?? "";
     Response res = await myDio.delete("${EndPoints.item}/$id",
-        options:
-        Options(headers: {HttpHeaders.authorizationHeader: "Bearer $token"}));
+        options: Options(
+            headers: {HttpHeaders.authorizationHeader: "Bearer $token"}));
     return res;
   }
 }

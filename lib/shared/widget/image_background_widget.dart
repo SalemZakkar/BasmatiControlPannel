@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../helper/helper_export.dart';
+import '../../helper/helper_export.dart';
 
 class BackgroundImageWidget extends StatefulWidget {
   final Widget? child;

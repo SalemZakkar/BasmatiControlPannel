@@ -6,7 +6,7 @@ import 'package:web_basmati/screens/items/bloc/items_bloc.dart';
 import 'package:web_basmati/web_services/web_services_export.dart';
 
 import '../../../helper/error_message.dart';
-import '../../../widgets/flush_messages.dart';
+import '../../../shared/widget/flush_messages.dart';
 
 class ManageItemImage extends StatefulWidget {
   final String? id;
@@ -38,10 +38,9 @@ class _ManageItemImageState extends State<ManageItemImage> {
         if (state is ItemSuccess) {
           context.read<ItemsBloc>().add(ItemGetDetails(id: widget.itemId));
         }
-        if(state is ItemsFail)
-          {
-            showErrorMessageFlush(context, errorParse(state.code), state.code);
-          }
+        if (state is ItemsFail) {
+          showErrorMessageFlush(context, errorParse(state.code), state.code);
+        }
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),

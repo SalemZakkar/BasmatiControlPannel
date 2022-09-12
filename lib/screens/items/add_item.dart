@@ -7,11 +7,11 @@ import 'package:web_basmati/helper/error_message.dart';
 import 'package:web_basmati/helper/helper_export.dart';
 import 'package:web_basmati/screens/items/bloc/items_bloc.dart';
 import 'package:web_basmati/screens/items/items_screen.dart';
-import 'package:web_basmati/screens/items/model/item_model.dart';
+import 'package:web_basmati/screens/items/model/item_details_model.dart';
 import 'package:web_basmati/screens/items/widget/new_item_image.dart';
 
-import '../../widgets/custom_button_widget.dart';
-import '../../widgets/text_field_holder.dart';
+import '../../shared/widget/custom_button_widget.dart';
+import '../../shared/widget/text_field_holder.dart';
 
 class AddItem extends StatefulWidget {
   static const String routeName = "/addItemScreen";
@@ -28,6 +28,7 @@ class _AddItemState extends State<AddItem> {
   String error = "";
   bool loading = false;
   bool mainError = false;
+  String text = "";
   bool imageError = false;
   late Widget functionWidget;
   GlobalKey<FormState> key = GlobalKey<FormState>();
@@ -231,7 +232,7 @@ class _AddItemState extends State<AddItem> {
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width * 0.9,
-                        height: 200,
+                        height: 250,
                         alignment: Alignment.centerRight,
                         color: Theme.of(context).scaffoldBackgroundColor,
                         child: ListTile(
@@ -246,16 +247,19 @@ class _AddItemState extends State<AddItem> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               TextFieldHolder(
-                                  height: 130,
+                                  height: 200,
                                   width:
                                       MediaQuery.of(context).size.width * 0.8,
                                   child: TextFormField(
                                     controller: itemDes,
-                                    textAlign: TextAlign.start,
+                                    onChanged: (t) {},
+                                    // textAlign: TextAlign.start,
+
                                     textAlignVertical: TextAlignVertical.top,
                                     decoration: const InputDecoration(
                                         hintText: "تفاصيل المنتج"),
                                     maxLines: null,
+
                                     expands: true,
                                     validator: (value) {
                                       if (!Validator.checkDescription(
@@ -290,10 +294,12 @@ class _AddItemState extends State<AddItem> {
                                     height: 70,
                                     child: TextFormField(
                                       controller: price,
+                                      textAlign: TextAlign.start,
+                                      textDirection: TextDirection.ltr,
                                       validator: (value) {
                                         if (!Validator.checkPrice(
                                             value ?? "")) {
-                                          return "السعر غير صالح";
+                                          return "السعر غير صحيح";
                                         }
                                         return null;
                                       },
@@ -307,7 +313,7 @@ class _AddItemState extends State<AddItem> {
                             width: 180,
                             child: ListTile(
                                 title: Text(
-                                  "نسبة التخفيض",
+                                  "السعر المخفض",
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline1!
@@ -320,6 +326,8 @@ class _AddItemState extends State<AddItem> {
                                     height: 70,
                                     child: TextFormField(
                                       controller: old,
+                                      textAlign: TextAlign.start,
+                                      textDirection: TextDirection.ltr,
                                       validator: (value) {
                                         if (value == null) {
                                           return null;
@@ -329,18 +337,13 @@ class _AddItemState extends State<AddItem> {
                                             return null;
                                           }
                                         }
-                                        if (Validator.checkPrice(value) &&
-                                            (double.parse(value) == 0 ||
-                                                double.parse(value) >= 100)) {
-                                          return "بين ال 0 وال 100";
-                                        }
                                         if (!Validator.checkPrice(value)) {
-                                          return "النسبة غير صحيحة";
+                                          return "السعر غير صحيح";
                                         }
                                         return null;
                                       },
                                       decoration: const InputDecoration(
-                                          hintText: 'إختياري (من 100)'),
+                                          hintText: 'إختياري'),
                                     ),
                                   ),
                                 )),
@@ -368,16 +371,20 @@ class _AddItemState extends State<AddItem> {
                                       //   });
                                       // }
                                       if (key.currentState!.validate()) {
-                                        ItemModel item = ItemModel(
-                                            data: Data(
-                                                discount:
-                                                    num.tryParse(old.text),
-                                                price: num.parse(price.text),
-                                                description: itemDes.text,
-                                                name: itemName.text));
+                                        ItemDetailsModel details =
+                                            ItemDetailsModel(
+                                                data: DetailsData(
+                                          isSpecial: false,
+                                          isActive: true,
+                                          price: double.tryParse(old.text),
+                                          fullPrice: double.parse(price.text),
+                                          name: itemName.text,
+                                          description: itemDes.text,
+                                        ));
                                         context.read<ItemsBloc>().add(
                                             ItemAddEvent(
-                                                itemModel: item, bytes: bytes));
+                                                itemModel: details,
+                                                bytes: bytes));
                                       }
                                     },
                                   )),
