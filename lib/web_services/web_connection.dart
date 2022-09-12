@@ -14,7 +14,7 @@ class WebConnection {
         receiveTimeout: 0,
         sendTimeout: 0,
         validateStatus: (code) {
-          return (code ?? 500) < 500;
+          return (code ?? 500) <= 500;
         },
         headers: {
           "Accept": "*/*",
