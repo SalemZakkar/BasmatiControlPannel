@@ -123,15 +123,15 @@ class _MyCustomCategoryWidgetState extends State<MyCustomCategoryWidget> {
                 // const SizedBox(
                 //   width: 4,
                 // ),
-                Text(widget.data.fullPrice!.toStringAsFixed(2),
+                widget.data.price != null && widget.data.price != 0 ? Text(widget.data.price!.toStringAsFixed(2),
                     style: Theme.of(context).textTheme.headline1!.copyWith(
                         fontSize: 15,
                         color: Colors.red,
-                        decoration: TextDecoration.lineThrough)),
+                        decoration: TextDecoration.lineThrough)):const Text(""),
                 const SizedBox(
                   width: 4,
                 ),
-                Text(widget.data.price!.toStringAsFixed(2),
+                Text(widget.data.fullPrice!.toStringAsFixed(2),
                     style: Theme.of(context)
                         .textTheme
                         .headline1!

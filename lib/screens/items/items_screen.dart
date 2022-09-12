@@ -196,27 +196,30 @@ class _ItemsScreenState extends State<ItemsScreen> {
                         TextFieldHolder(
                           height: 40,
                           width: 100,
-                          child: TextFormField(
-                              decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.all(10),
-                                  hintText: "الحد الأدنى"),
-                              keyboardType: TextInputType.number,
-                              controller: low,
-                              onChanged: (value) {
-                                if (!Validator.checkPrice(value)) {
-                                  reset();
-                                  fetch(context);
-                                }
-                              },
-                              onFieldSubmitted: (value) {
-                                if (Validator.checkPrice(value)) {
-                                  reset();
-                                  fetch(context);
-                                }
-                              },
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ]),
+                          child: Directionality(
+                            textDirection: TextDirection.ltr,
+                            child: TextFormField(
+                                decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.all(10),
+                                    hintText: "الحد الأدنى"),
+                                keyboardType: TextInputType.number,
+                                controller: low,
+                                onChanged: (value) {
+                                  if (!Validator.checkPrice(value)) {
+                                    reset();
+                                    fetch(context);
+                                  }
+                                },
+                                onFieldSubmitted: (value) {
+                                  if (Validator.checkPrice(value)) {
+                                    reset();
+                                    fetch(context);
+                                  }
+                                },
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ]),
+                          ),
                         ),
                         Text(
                           "  -  \n",
@@ -225,27 +228,30 @@ class _ItemsScreenState extends State<ItemsScreen> {
                         TextFieldHolder(
                           height: 40,
                           width: 100,
-                          child: TextFormField(
-                              onChanged: (value) {
-                                if (!Validator.checkPrice(value)) {
-                                  reset();
-                                  fetch(context);
-                                }
-                              },
-                              controller: high,
-                              decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.all(10),
-                                  hintText: "الحد الأعلى"),
-                              keyboardType: TextInputType.number,
-                              onFieldSubmitted: (value) {
-                                if (Validator.checkPrice(value)) {
-                                  reset();
-                                  fetch(context);
-                                }
-                              },
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ]),
+                          child: Directionality(
+                            textDirection: TextDirection.ltr,
+                            child: TextFormField(
+                                onChanged: (value) {
+                                  if (!Validator.checkPrice(value)) {
+                                    reset();
+                                    fetch(context);
+                                  }
+                                },
+                                controller: high,
+                                decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.all(10),
+                                    hintText: "الحد الأعلى"),
+                                keyboardType: TextInputType.number,
+                                onFieldSubmitted: (value) {
+                                  if (Validator.checkPrice(value)) {
+                                    reset();
+                                    fetch(context);
+                                  }
+                                },
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ]),
+                          ),
                         ),
                       ],
                     ),
