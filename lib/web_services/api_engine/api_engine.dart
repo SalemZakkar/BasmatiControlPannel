@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:web_basmati/web_services/api_engine/response_model.dart';
@@ -48,7 +49,6 @@ class ApiEngine {
     ResponseModel res;
     try {
       Response response = await sendRequest(
-
         requestMethod: requestMethod,
         path: path,
         queryParameters: queryParameters,
@@ -77,19 +77,19 @@ class ApiEngine {
       debugPrint(e.toString());
       debugPrint(
           "------------------------------------------------------------------------");
-      if (e.type == DioErrorType.response && e.response!=null) {
-        try{
-          ErrorData errorData = ErrorData.fromJson(jsonDecode(e.response?.data));
+      if (e.type == DioErrorType.response && e.response != null) {
+        try {
+          ErrorData errorData =
+              ErrorData.fromJson(jsonDecode(e.response?.data));
           res = ResponseModel(success: false, errorCode: errorData.code ?? "");
-        }catch(e){
-          res = ResponseModel(success: false , errorCode: "7787");
+        } catch (e) {
+          res = ResponseModel(success: false, errorCode: "7787");
         }
       } else if (e.message == "XMLHttpRequest error." ||
           e.type == DioErrorType.connectTimeout ||
           e.error is SocketException ||
           e.type == DioErrorType.sendTimeout ||
           e.type == DioErrorType.receiveTimeout) {
-        print('*&***********************************************************');
         res = ResponseModel(success: false, errorCode: "7");
       } else {
         res = ResponseModel(success: false, errorCode: "8872");

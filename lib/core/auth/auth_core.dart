@@ -1,16 +1,14 @@
-import 'package:dio/dio.dart';
+import 'package:web_basmati/web_services/api_engine/api_engine.dart';
+import 'package:web_basmati/web_services/api_engine/enum.dart';
+import 'package:web_basmati/web_services/api_engine/response_model.dart';
 import 'package:web_basmati/web_services/endpoint.dart';
-import 'package:web_basmati/web_services/web_connection.dart';
 
 class AuthCore {
-  static Future<Response> login(String phone, String password) async {
-    Response res = await myDio
-        .post(EndPoints.signIn, data: {"phone": phone, "password": password},
-            options: Options(validateStatus: (code) {
-      return (code ?? 1000) < 500;
-    }));
+  static Future<ResponseModel> login(String phone, String password) async {
+    ResponseModel res = await ApiEngine.request(
+        requestMethod: RequestMethod.post,
+        path: EndPoints.signIn,
+        data: {"phone": phone, "password": password});
     return res;
   }
-
-
 }

@@ -1,9 +1,8 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_basmati/helper/error_message.dart';
 import 'package:web_basmati/screens/authentication/bloc/auth_bloc.dart';
+
 import '../../shared/widget/custom_button_widget.dart';
 import '../../shared/widget/text_field_holder.dart';
 import '../home/home_screen.dart';
@@ -96,10 +95,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                     child: TextFormField(
                                       enableInteractiveSelection: false,
                                       keyboardType: TextInputType.multiline,
-
-                                      onChanged: (e){
-
-                                      },
+                                      onChanged: (e) {},
                                       decoration: InputDecoration(
                                           fillColor: Theme.of(context)
                                               .scaffoldBackgroundColor,

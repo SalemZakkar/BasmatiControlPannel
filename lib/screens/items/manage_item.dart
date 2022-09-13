@@ -1,18 +1,16 @@
-import 'dart:ui';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_basmati/helper/error_message.dart';
 import 'package:web_basmati/screens/items/items_screen.dart';
 import 'package:web_basmati/screens/items/model/item_details_model.dart';
 import 'package:web_basmati/screens/items/widget/manage_item_image.dart';
+
 import '../../helper/validator.dart';
 import '../../shared/widget/confirm_dialog.dart';
 import '../../shared/widget/custom_button_widget.dart';
-import '../../shared/widget/flush_messages.dart';
 import '../../shared/widget/error_notification.dart';
+import '../../shared/widget/flush_messages.dart';
 import '../../shared/widget/text_field_holder.dart';
 import 'bloc/items_bloc.dart';
 

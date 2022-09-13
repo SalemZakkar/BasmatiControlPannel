@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:web_basmati/core/auth/auth_core.dart';
 import 'package:web_basmati/screens/authentication/authentication_screen.dart';
 import 'package:web_basmati/screens/authentication/repository/repository.dart';
 import 'package:web_basmati/screens/home/home_screen.dart';

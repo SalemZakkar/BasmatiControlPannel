@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:web_basmati/screens/items/bloc/items_bloc.dart';
 import 'package:web_basmati/screens/items/items_screen.dart';
 import 'package:web_basmati/screens/items/model/item_details_model.dart';
 import 'package:web_basmati/screens/items/widget/new_item_image.dart';
+
 import '../../shared/widget/custom_button_widget.dart';
 import '../../shared/widget/text_field_holder.dart';
 
@@ -339,7 +341,6 @@ class _AddItemState extends State<AddItem> {
                                         }
                                         return null;
                                       },
-                                     
                                       decoration: const InputDecoration(
                                           hintText: 'إختياري'),
                                     ),
