@@ -52,7 +52,6 @@ dependencies:
   http_parser: ^4.0.1
   another_flushbar: ^1.12.29
   image_compression_flutter: ^1.0.2
-  web_directional_text_field: ^0.0.6
 
 dev_dependencies:
   flutter_test:

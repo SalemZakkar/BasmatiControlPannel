@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:web_basmati/screens/home/widget/table_title.dart';
 import 'package:web_basmati/screens/home/widget/user_info_card.dart';
 import 'package:web_basmati/screens/navigation_screen/drawer.dart';
-import 'package:web_directional_text_field/web_directional_text_field.dart';
 
 import '../../shared/widget/text_field_holder.dart';
 
@@ -54,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       subtitle: TextFieldHolder(
                         height: 40,
                         width: 300,
-                        child: WebTextFormField(
+                        child: TextFormField(
                           decoration: const InputDecoration(
                               contentPadding: EdgeInsets.all(10),
                               hintText: "أدخل رقم الهاتف"),

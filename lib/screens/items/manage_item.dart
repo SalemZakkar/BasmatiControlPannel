@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_basmati/helper/error_message.dart';
 import 'package:web_basmati/screens/items/items_screen.dart';
@@ -140,9 +143,11 @@ class _AddItemState extends State<ManageItem> {
               price = TextEditingController(
                   text: state.itemDetailsModel.data!.fullPrice!
                       .toStringAsFixed(2));
-              old = TextEditingController(
-                  text:
-                      (state.itemDetailsModel.data!.price!.toStringAsFixed(2)));
+              if (state.itemDetailsModel.data?.price != null) {
+                old = TextEditingController(
+                    text: (state.itemDetailsModel.data!.price!
+                        .toStringAsFixed(2)));
+              }
 
               images = state.itemDetailsModel.data?.images ?? [];
               active = state.itemDetailsModel.data?.isActive ?? false;
@@ -178,6 +183,14 @@ class _AddItemState extends State<ManageItem> {
                               height: 80,
                               child: TextFormField(
                                 controller: itemName,
+                                onTap: () {
+                                  itemDes.selection = TextSelection(
+                                      baseOffset: itemDes.selection.baseOffset,
+                                      extentOffset:
+                                          itemDes.selection.extentOffset,
+                                      affinity: TextAffinity.upstream,
+                                      isDirectional: true);
+                                },
                                 decoration: const InputDecoration(
                                     contentPadding: EdgeInsets.all(10),
                                     hintText: "أدخل اسم المنتج"),

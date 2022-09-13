@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_basmati/helper/error_message.dart';
@@ -94,6 +96,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                     child: TextFormField(
                                       enableInteractiveSelection: false,
                                       keyboardType: TextInputType.multiline,
+
+                                      onChanged: (e){
+
+                                      },
                                       decoration: InputDecoration(
                                           fillColor: Theme.of(context)
                                               .scaffoldBackgroundColor,

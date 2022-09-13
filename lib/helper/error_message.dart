@@ -7,6 +7,8 @@ String errorParse(String codeError) {
       return "لا يوجد إتصال بالإنترنت";
     case "0000":
       return "لا يوجد إتصال بالإنترنت";
+    case "0601":
+      return "يرجى تسجيل الدخول";
     case "0603":
       // return "Invalid authentication phone or password.";
       return "خطأ في رقم الهاتف او كلمة المرور";

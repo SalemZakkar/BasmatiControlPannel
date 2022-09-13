@@ -1,16 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:web_basmati/core/items/item_core.dart';
-import 'package:web_basmati/helper/error_data.dart';
 import 'package:web_basmati/screens/authentication/persistance/storage.dart';
 import 'package:web_basmati/screens/items/model/get_items_model.dart';
 import 'package:web_basmati/screens/items/model/item_details_model.dart';
+import 'package:web_basmati/web_services/api_engine/api_engine.dart';
+import 'package:web_basmati/web_services/api_engine/enum.dart';
+import 'package:web_basmati/web_services/api_engine/response_model.dart';
 import 'package:web_basmati/web_services/web_services_export.dart';
 
 part 'items_event.dart';
@@ -24,7 +23,6 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
     on<RemoveItemEvent>(_removePhoto);
     on<ItemAddEvent>(_addItem);
     on<ItemGetEvent>(_getItemsCriteria);
-    on<ItemGetByName>(_getItemsByName);
     on<ItemGetDetails>(_getItemDetails);
     on<UpdateProductEvent>(_updateItem);
     on<UploadImageEvent>(_uploadImage);
@@ -38,234 +36,156 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
 
   _addItem(ItemAddEvent event, Emitter<ItemsState> emit) async {
     emit(ItemsLoading());
-    try {
-      emit(ItemsLoading());
-      List<MultipartFile> files = [];
-      // List<ImageFile> file = [];
-      // List<Uint8List> bytes = [];
-      // Configuration configuration =
-      //     const Configuration(outputType: ImageOutputType.jpg, quality: 50);
-      // for (int i = 0; i < event.bytes.length; i++) {
-      //   file.add(ImageFile(filePath: "filePath", rawBytes: event.bytes[i]));
-      //   ImageFile compressed = await compressor.compress(
-      //       ImageFileConfiguration(input: file[i], config: configuration));
-      //   bytes.add(compressed.rawBytes);
-      //}
-
-      for (int i = 0; i < event.bytes.length; i++) {
-        files.add(MultipartFile.fromBytes(event.bytes[i],
-            filename: "$i", contentType: MediaType.parse("image/jpeg")));
-      }
-      FormData formData = FormData.fromMap({
-        "name": event.itemModel.data?.name!.trim(),
-        "description": event.itemModel.data?.description!.trim(),
-        "price": event.itemModel.data?.price,
-        "images": files,
-        "isActive": event.itemModel.data!.isActive,
-        "isSpecial": event.itemModel.data!.isSpecial,
-        "fullPrice": event.itemModel.data!.fullPrice
-      });
-
-      String token = await AuthStore.getToken() ?? "";
-      Response res = await myDio.post(EndPoints.item,
-          options: Options(
-              headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
-              receiveTimeout: 0,
-              sendTimeout: 0),
-          data: formData);
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        emit(ItemSuccess());
-      } else {
-        ErrorData errorData = ErrorData.fromJson(jsonDecode(res.data));
-        emit(ItemsFail(code: errorData.code ?? "999"));
-      }
-    } on DioError catch (e) {
-      if (e.error is SocketException ||
-          e.type == DioErrorType.connectTimeout ||
-          e.message == xmlError) {
-        emit(ItemsFail(code: "7"));
-      } else {
-        debugPrint(e.toString());
-        emit(ItemsFail(code: "999"));
-      }
-    } catch (e) {
-      emit(ItemsFail(code: "999"));
+    List<MultipartFile> files = [];
+    for (int i = 0; i < event.bytes.length; i++) {
+      files.add(MultipartFile.fromBytes(event.bytes[i],
+          filename: "$i", contentType: MediaType.parse("image/jpeg")));
+    }
+    FormData formData = FormData.fromMap({
+      "name": event.itemModel.data?.name!.trim(),
+      "description": event.itemModel.data?.description!.trim(),
+      "price": event.itemModel.data?.price,
+      "images": files,
+      "isActive": event.itemModel.data!.isActive,
+      "isSpecial": event.itemModel.data!.isSpecial,
+      "fullPrice": event.itemModel.data!.fullPrice
+    });
+    String token = await AuthStore.getToken() ?? "";
+    ResponseModel res = await ApiEngine.request(
+        requestMethod: RequestMethod.post,
+        path: EndPoints.item,
+        data: formData,
+        options: Options(
+            headers: {HttpHeaders.authorizationHeader: "Bearer $token"}));
+    if (res.success) {
+      emit(ItemSuccess());
+    } else {
+      emit(ItemsFail(code: res.errorCode ?? ""));
     }
   }
 
   _getItemsCriteria(ItemGetEvent event, Emitter<ItemsState> emit) async {
-    try {
-      emit(ItemsLoading());
-      Response res = await ItemsCore.getItems(
-          event.skip, event.limit, event.name, event.low, event.high);
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        GetItemsModel data = GetItemsModel.fromJson(jsonDecode(res.data));
-        emit(GetItemSuccess(data: data));
-      } else {
-        ErrorData error = jsonDecode(res.data);
-        emit(ItemsFail(code: error.code ?? "999"));
-      }
-    } on DioError catch (e) {
-      if (e.error is SocketException ||
-          e.type == DioErrorType.connectTimeout ||
-          e.message == xmlError) {
-        emit(ItemsFail(code: "7"));
-      } else {
-        emit(ItemsFail(code: "999"));
-      }
-    } catch (e) {
-      emit(ItemsFail(code: "999"));
+    emit(ItemsLoading());
+    Map<String, dynamic> params = {};
+    params.putIfAbsent("total", () => true);
+    params.putIfAbsent("skip", () => event.skip);
+    params.putIfAbsent("limit", () => event.limit);
+    if (event.name != null) {
+      params.putIfAbsent("name", () => event.name);
     }
-  }
-
-  _getItemsByName(ItemGetByName event, Emitter<ItemsState> emit) async {
-    try {
-      emit(ItemsLoading());
-      Response res = await ItemsCore.getItemsByName(event.name);
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        GetItemsModel data = GetItemsModel.fromJson(jsonDecode(res.data));
-        emit(GetItemSuccess(data: data));
-      } else {
-        ErrorData error = jsonDecode(res.data);
-        emit(ItemsFail(code: error.code ?? "999"));
-      }
-    } on DioError catch (e) {
-      if (e.error is SocketException ||
-          e.type == DioErrorType.connectTimeout ||
-          e.message == xmlError) {
-        emit(ItemsFail(code: "7"));
-      } else {
-        emit(ItemsFail(code: "999"));
-      }
-    } catch (e) {
-      emit(ItemsFail(code: "999"));
+    if (event.low != null) {
+      params.putIfAbsent("price[gte]", () => event.low);
+    }
+    if (event.high != null) {
+      params.putIfAbsent("price[lte]", () => event.high);
+    }
+    ResponseModel response = await ApiEngine.request(
+        requestMethod: RequestMethod.get,
+        path: EndPoints.item,
+        data: params,
+        options: Options(headers: {
+          HttpHeaders.authorizationHeader:
+              "Bearer ${await AuthStore.getToken() ?? ""}"
+        }));
+    if (response.success) {
+      GetItemsModel data =
+          GetItemsModel.fromJson(jsonDecode(response.res!.data));
+      emit(GetItemSuccess(data: data));
+    } else {
+      emit(ItemsFail(code: response.errorCode!));
     }
   }
 
   _getItemDetails(ItemGetDetails event, Emitter<ItemsState> emit) async {
-    try {
-      emit(ItemsLoading());
-      Response res = await ItemsCore.getItemDetails(event.id);
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        emit(GetItemDetailsSuccess(
-            itemDetailsModel: ItemDetailsModel.fromJson(jsonDecode(res.data))));
-      } else {
-        ErrorData errorData = ErrorData.fromJson(jsonDecode(res.data));
-        emit(ItemsFail(code: errorData.code ?? "999"));
-      }
-    } on DioError catch (e) {
-      if (e.error is SocketException ||
-          e.type == DioErrorType.connectTimeout ||
-          e.message == xmlError) {
-        emit(ItemsFail(code: "7"));
-      } else {
-        debugPrint(e.toString());
-      }
-    } catch (e) {
-      emit(ItemsFail(code: "999"));
+    emit(ItemsLoading());
+    ResponseModel res = await ApiEngine.request(
+        requestMethod: RequestMethod.get,
+        path: "${EndPoints.item}/${event.id}");
+    if (res.success) {
+      ItemDetailsModel data =
+          ItemDetailsModel.fromJson(jsonDecode(res.res!.data));
+      emit(GetItemDetailsSuccess(itemDetailsModel: data));
+    } else {
+      emit(ItemsFail(code: res.errorCode ?? ""));
     }
   }
 
   _updateItem(UpdateProductEvent event, Emitter<ItemsState> emit) async {
-    try {
-      emit(ItemsLoading());
-      Response res = await ItemsCore.updateItem(event.itemDetailsModel);
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        emit(ItemSuccess());
-      } else {
-        ErrorData errorData = ErrorData.fromJson(jsonDecode(res.data));
-        emit(ItemsFail(code: errorData.code ?? "999"));
-      }
-    } on DioError catch (e) {
-      if (e.error is SocketException ||
-          e.type == DioErrorType.connectTimeout ||
-          e.message == xmlError) {
-        emit(ItemsFail(code: "7"));
-      } else {
-        emit(ItemsFail(code: "999"));
-      }
-    } catch (e) {
-      emit(ItemsFail(code: "999"));
+    emit(ItemsLoading());
+    Map<String, dynamic> form = {};
+    form["name"] = event.itemDetailsModel.data?.name;
+    form["description"] = event.itemDetailsModel.data?.description;
+    form["images"] = event.itemDetailsModel.data?.images;
+    form["price"] = event.itemDetailsModel.data?.price;
+    form["isSpecial"] = event.itemDetailsModel.data?.isSpecial;
+    form["isActive"] = event.itemDetailsModel.data?.isActive;
+    form["fullPrice"] = event.itemDetailsModel.data?.fullPrice;
+    ResponseModel res = await ApiEngine.request(
+        requestMethod: RequestMethod.patch,
+        path: "${EndPoints.item}/${event.itemDetailsModel.data!.id!}",
+        data: form,
+        options: Options(headers: {
+          HttpHeaders.authorizationHeader:
+              "Bearer ${await AuthStore.getToken()}"
+        }));
+    if (res.success) {
+      emit(ItemSuccess());
+    } else {
+      emit(ItemsFail(code: res.errorCode ?? ""));
     }
   }
 
   _uploadImage(UploadImageEvent event, Emitter<ItemsState> emit) async {
-    // print('\n\n\n\n\n\n\n\n\n\n\n-------------------------------->/ n');
-    try {
-      emit(ItemsLoading());
-      // Configuration configuration =
-      //     const Configuration(outputType: ImageOutputType.jpg, quality: 50);
-      // ImageFile file = ImageFile(filePath: "filePath", rawBytes: event.bytes);
-      // ImageFile compressed = await compressor
-      //     .compress(ImageFileConfiguration(input: file, config: configuration));
-      // Uint8List bytes = compressed.rawBytes;
-      MultipartFile multipartFile = MultipartFile.fromBytes(event.bytes,
-          filename: "1", contentType: MediaType.parse("image/jpeg"));
-      Response res = await ItemsCore.uploadImage(event.id, multipartFile);
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        emit(ItemSuccess());
-      } else {
-        ErrorData errorData = ErrorData.fromJson(jsonDecode(res.data));
-        emit(ItemsFail(code: errorData.code ?? "999"));
-      }
-    } on DioError catch (e) {
-      if (e.error is SocketException ||
-          e.type == DioErrorType.connectTimeout ||
-          e.message == xmlError) {
-        emit(ItemsFail(code: "7"));
-      } else {
-        emit(ItemsFail(code: "999"));
-      }
-    } catch (e) {
-      emit(ItemsFail(code: "999"));
+    emit(ItemsLoading());
+    MultipartFile multipartFile = MultipartFile.fromBytes(event.bytes,
+        filename: "1", contentType: MediaType.parse("image/jpeg"));
+    FormData formData = FormData.fromMap({
+      "images": [multipartFile]
+    });
+    ResponseModel res = await ApiEngine.request(
+        requestMethod: RequestMethod.post,
+        path: "${EndPoints.item}/${event.id}/file",
+        data: formData,
+        options: Options(headers: {
+          HttpHeaders.authorizationHeader:
+              "Bearer ${await AuthStore.getToken()}"
+        }));
+    if (res.success) {
+      emit(ItemSuccess());
+    } else {
+      emit(ItemsFail(code: res.errorCode ?? ""));
     }
   }
 
   _deleteImage(DeleteImageEvent event, Emitter<ItemsState> emit) async {
-    try {
-      emit(ItemsLoading());
-      Response res = await ItemsCore.deleteImage(event.id, event.itemId);
-      if (res.statusCode == 200 || res.statusCode == 204) {
-        emit(ItemSuccess());
-      } else {
-        ErrorData errorData = ErrorData.fromJson(jsonDecode(res.data));
-        emit(ItemsFail(code: errorData.code ?? "999"));
-      }
-    } on DioError catch (e) {
-      if (e.error is SocketException ||
-          e.type == DioErrorType.connectTimeout ||
-          e.message == xmlError) {
-        emit(ItemsFail(code: "7"));
-      } else {
-        emit(ItemsFail(code: "999"));
-      }
-    } catch (e) {
-      emit(ItemsFail(code: "999"));
+    emit(ItemsLoading());
+    ResponseModel responseModel = await ApiEngine.request(
+        requestMethod: RequestMethod.delete,
+        path: "${EndPoints.item}/${event.itemId}/${event.id}",
+        options: Options(headers: {
+          HttpHeaders.authorizationHeader:
+              "Bearer ${await AuthStore.getToken()}"
+        }));
+    if (responseModel.success) {
+      emit(ItemSuccess());
+    } else {
+      emit(ItemsFail(code: responseModel.errorCode ?? ""));
     }
   }
 
   _deleteProduct(DeleteEvent event, Emitter<ItemsState> emit) async {
     emit(ItemsLoading());
-    try {
-      Response res = await ItemsCore.deleteProduct(event.id);
-      if (res.statusCode == 200 ||
-          res.statusCode == 201 ||
-          res.statusCode == 204) {
-        emit(ItemSuccess());
-      } else {
-        ErrorData errorData = ErrorData.fromJson(jsonDecode(res.data));
-        emit(ItemsFail(code: errorData.code ?? "999"));
-      }
-    } on DioError catch (e) {
-      if (e.error is SocketException ||
-          e.type == DioErrorType.connectTimeout ||
-          e.message == xmlError) {
-        emit(ItemsFail(code: "7"));
-      } else {
-        emit(ItemsFail(code: "999"));
-      }
-    } catch (e) {
-      emit(ItemsFail(code: "999"));
+    ResponseModel responseModel = await ApiEngine.request(
+        requestMethod: RequestMethod.delete,
+        path: "${EndPoints.item}/${event.id}",
+        options: Options(headers: {
+          HttpHeaders.authorizationHeader:
+              "Bearer ${await AuthStore.getToken()}"
+        }));
+    if (responseModel.success) {
+      emit(ItemSuccess());
+    } else {
+      emit(ItemsFail(code: responseModel.errorCode ?? ""));
     }
   }
 }

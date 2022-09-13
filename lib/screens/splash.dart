@@ -4,8 +4,7 @@ import 'package:web_basmati/screens/authentication/authentication_screen.dart';
 import 'package:web_basmati/screens/authentication/bloc/auth_bloc.dart';
 import 'package:web_basmati/screens/authentication/persistance/storage.dart';
 import 'package:web_basmati/screens/home/home_screen.dart';
-import 'package:web_basmati/web_services/web_connection.dart';
-import 'package:web_directional_text_field/web_directional_text_field.dart';
+import 'package:web_basmati/web_services/api_engine/api_engine.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
@@ -16,10 +15,9 @@ class Splash extends StatefulWidget {
 
 class _SplashState extends State<Splash> {
   void startApp(BuildContext context) async {
-    WebConnection();
+    ApiEngine.initDio();
     String? phone = await AuthStore.getPhone();
     String? pass = await AuthStore.getPass();
-    WebTextField.initialize();
     if (phone == null || pass == null) {
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(
