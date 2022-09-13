@@ -8,8 +8,8 @@ class SharedBloc extends Bloc<SharedEvent, SharedState> {
     on<SharedEvent>((event, emit) {
       // TODO: implement event handler
     });
-    on<RemoveEvent>((event, emit) {
-      emit(RemoveState(id: event.id));
+    on<RemoveEventAppInfo>((event, emit) {
+      emit(RemoveStateAppInfo(id: event.id));
     });
   }
 }

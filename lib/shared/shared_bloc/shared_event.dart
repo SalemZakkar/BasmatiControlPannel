@@ -2,7 +2,7 @@ part of 'shared_bloc.dart';
 
 abstract class SharedEvent {}
 
-class RemoveEvent extends SharedEvent {
+class RemoveEventAppInfo extends SharedEvent {
   final int id;
-  RemoveEvent({required this.id});
+  RemoveEventAppInfo({required this.id});
 }

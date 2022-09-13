@@ -5,6 +5,7 @@ class EndPoints {
   static const getMine = '/user/mine';
   static const refreshToken = 'auth/refresh-token';
   static const item = '/product';
+  static const about = '/about';
 //
   static const imagePath = '/static';
 // static const  = '';

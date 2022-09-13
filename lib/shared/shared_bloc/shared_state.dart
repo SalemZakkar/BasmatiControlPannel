@@ -4,7 +4,7 @@ abstract class SharedState {}
 
 class SharedInitial extends SharedState {}
 
-class RemoveState extends SharedState {
+class RemoveStateAppInfo extends SharedState {
   final int id;
-  RemoveState({required this.id});
+  RemoveStateAppInfo({required this.id});
 }
