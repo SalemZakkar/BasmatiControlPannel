@@ -36,6 +36,17 @@ class _AddItemState extends State<AddItem> {
   TextEditingController itemDes = TextEditingController();
   TextEditingController price = TextEditingController();
   TextEditingController old = TextEditingController();
+  TextEditingController warranty = TextEditingController();
+  @override
+  void dispose() {
+    itemName.dispose();
+    itemDes.dispose();
+    price.dispose();
+    old.dispose();
+    warranty.dispose();
+    super.dispose();
+  }
+
   //final ItemsBloc itemsBloc = ItemsBloc();
   @override
   Widget build(BuildContext context) {
@@ -273,6 +284,45 @@ class _AddItemState extends State<AddItem> {
                           ),
                         ),
                       ),
+                      SizedBox(
+                        width: 200,
+                        child: ListTile(
+                            title: Text(
+                              "الضمان",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(),
+                            ),
+                            subtitle: Align(
+                              alignment: Alignment.centerRight,
+                              child: TextFieldHolder(
+                                width: 340,
+                                height: 70,
+                                child: TextFormField(
+                                  controller: warranty,
+                                  textAlign: TextAlign.center,
+                                  textDirection: TextDirection.ltr,
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return null;
+                                    } else {
+                                      if (value.isEmpty ||
+                                          value.trim().isEmpty) {
+                                        return null;
+                                      }
+                                    }
+                                    if (!Validator.checkPrice(value)) {
+                                      return "الضمان غير صحيح";
+                                    }
+                                    return null;
+                                  },
+                                  decoration: const InputDecoration(
+                                      hintText: 'المدة بالشهور (اختياري)'),
+                                ),
+                              ),
+                            )),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -373,13 +423,18 @@ class _AddItemState extends State<AddItem> {
                                         ItemDetailsModel details =
                                             ItemDetailsModel(
                                                 data: DetailsData(
-                                          isSpecial: false,
-                                          isActive: true,
-                                          price: double.tryParse(old.text),
-                                          fullPrice: double.parse(price.text),
-                                          name: itemName.text,
-                                          description: itemDes.text,
-                                        ));
+                                                    isSpecial: false,
+                                                    isActive: true,
+                                                    price: double.tryParse(
+                                                        old.text),
+                                                    fullPrice: double.parse(
+                                                        price.text),
+                                                    name: itemName.text,
+                                                    description: itemDes.text,
+                                                    warranty: Warranty(
+                                                        unit: "month",
+                                                        value: double.tryParse(
+                                                            warranty.text))));
                                         context.read<ItemsBloc>().add(
                                             ItemAddEvent(
                                                 itemModel: details,

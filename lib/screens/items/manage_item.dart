@@ -42,6 +42,7 @@ class _AddItemState extends State<ManageItem> {
   TextEditingController itemDes = TextEditingController();
   TextEditingController price = TextEditingController();
   TextEditingController old = TextEditingController();
+  TextEditingController warranty = TextEditingController();
   void refresh() {
     itemsBloc = ItemsBloc();
     imagesBloc = ItemsBloc();
@@ -58,6 +59,16 @@ class _AddItemState extends State<ManageItem> {
       imagesBloc
           .add(UploadImageEvent(id: widget.id, bytes: res.files.single.bytes!));
     }
+  }
+
+  @override
+  void dispose() {
+    itemName.dispose();
+    itemDes.dispose();
+    price.dispose();
+    old.dispose();
+    warranty.dispose();
+    super.dispose();
   }
 
   @override
@@ -145,6 +156,11 @@ class _AddItemState extends State<ManageItem> {
                 old = TextEditingController(
                     text: (state.itemDetailsModel.data!.price!
                         .toStringAsFixed(2)));
+              }
+              if (state.itemDetailsModel.data?.warranty?.value != null) {
+                warranty = TextEditingController(
+                    text: state.itemDetailsModel.data?.warranty?.value
+                        .toString());
               }
 
               images = state.itemDetailsModel.data?.images ?? [];
@@ -371,6 +387,45 @@ class _AddItemState extends State<ManageItem> {
                             ],
                           ),
                         ),
+                      ),
+                      SizedBox(
+                        width: 200,
+                        child: ListTile(
+                            title: Text(
+                              "الضمان",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(),
+                            ),
+                            subtitle: Align(
+                              alignment: Alignment.centerRight,
+                              child: TextFieldHolder(
+                                width: 340,
+                                height: 70,
+                                child: TextFormField(
+                                  controller: warranty,
+                                  textAlign: TextAlign.center,
+                                  textDirection: TextDirection.ltr,
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return null;
+                                    } else {
+                                      if (value.isEmpty ||
+                                          value.trim().isEmpty) {
+                                        return null;
+                                      }
+                                    }
+                                    if (!Validator.checkPrice(value)) {
+                                      return "الضمان غير صحيح";
+                                    }
+                                    return null;
+                                  },
+                                  decoration: const InputDecoration(
+                                      hintText: 'المدة بالشهور (اختياري)'),
+                                ),
+                              ),
+                            )),
                       ),
                       Container(
                         width: size.width,
@@ -646,7 +701,12 @@ class _AddItemState extends State<ManageItem> {
                                                                   old.text),
                                                           images: images,
                                                           isActive: active,
-                                                          isSpecial: fav));
+                                                          isSpecial: fav,
+                                                          warranty: Warranty(
+                                                              unit: "month",
+                                                              value: double
+                                                                  .tryParse(warranty
+                                                                      .text))));
                                               itemsBloc.add(UpdateProductEvent(
                                                   itemDetailsModel: data));
                                             }

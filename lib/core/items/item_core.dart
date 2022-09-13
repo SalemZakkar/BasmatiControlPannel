@@ -12,7 +12,7 @@ class ItemsCore {
   static Future<ResponseModel> addItem(
       ItemDetailsModel itemModel, List<MultipartFile> files) async {
     String token = await AuthStore.getToken() ?? "";
-    FormData formData = FormData.fromMap({
+    Map<String, dynamic> form = {
       "name": itemModel.data?.name!.trim(),
       "description": itemModel.data?.description!.trim(),
       "price": itemModel.data?.price,
@@ -20,14 +20,19 @@ class ItemsCore {
       "isActive": itemModel.data!.isActive,
       "isSpecial": itemModel.data!.isSpecial,
       "fullPrice": itemModel.data!.fullPrice,
-      "warranty": itemModel.data!.warranty
-    });
+    };
+    if (itemModel.data!.warranty?.value != null) {
+      form["warranty[unit]"] = "month";
+      form["warranty[value]"] = itemModel.data!.warranty?.value;
+    }
+    FormData formData = FormData.fromMap(form);
     ResponseModel res = await ApiEngine.request(
         requestMethod: RequestMethod.post,
         path: EndPoints.item,
         data: formData,
         options: Options(
-            headers: {HttpHeaders.authorizationHeader: "Bearer $token"}));
+            headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+            sendTimeout: 25000));
     return res;
   }
 
@@ -84,6 +89,9 @@ class ItemsCore {
     form["isSpecial"] = data.data?.isSpecial;
     form["isActive"] = data.data?.isActive;
     form["fullPrice"] = data.data?.fullPrice;
+    if (data.data!.warranty?.value != null) {
+      form["warranty"] = data.data!.warranty?.toJson();
+    }
     ResponseModel res = await ApiEngine.request(
         requestMethod: RequestMethod.patch,
         path: "${EndPoints.item}/${data.data!.id!}",
@@ -100,7 +108,8 @@ class ItemsCore {
         requestMethod: RequestMethod.post,
         path: "${EndPoints.item}/$id/file",
         options: Options(
-            headers: {HttpHeaders.authorizationHeader: "Bearer $token"}),
+            headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+            sendTimeout: 25000),
         data: FormData.fromMap({
           "images": [file]
         }));
