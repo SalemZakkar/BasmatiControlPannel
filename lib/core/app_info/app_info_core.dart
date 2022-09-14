@@ -25,10 +25,7 @@ class AppInfoCore {
     ResponseModel res = await ApiEngine.request(
         requestMethod: RequestMethod.patch,
         path: EndPoints.about,
-        data: {
-          "whatsApp" : data.phones,
-          "description" : data.description
-        },
+        data: {"whatsApp": data.phones, "description": data.description},
         options: Options(headers: {
           HttpHeaders.authorizationHeader:
               "Bearer ${await AuthStore.getToken()}"

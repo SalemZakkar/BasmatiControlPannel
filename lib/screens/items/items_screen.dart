@@ -276,9 +276,6 @@ class _ItemsScreenState extends State<ItemsScreen> {
           BlocConsumer<ItemsBloc, ItemsState>(
             bloc: itemsBloc,
             listener: (context, state) {
-              if (state is! GetItemDetailsSuccess) {
-                reset();
-              }
               if (state is ItemsLoading) {
                 setState(() {
                   loading = true;

@@ -75,7 +75,8 @@ class _AppInfoScreenState extends State<AppInfoScreen> {
                     bloc: appInfoBloc,
                     listener: (context, state2) {
                       if (state2 is UpdateAppInfoSuccess) {
-                        showSuccessFlushMessage(context , "تم حفظ المعلومات بنجاح");
+                        showSuccessFlushMessage(
+                            context, "تم حفظ المعلومات بنجاح");
                         setState(() {
                           loading = false;
                           mainError = false;
@@ -227,23 +228,23 @@ class _AppInfoScreenState extends State<AppInfoScreen> {
                                 child: loading
                                     ? const CircularProgressIndicator()
                                     : MyCustomButton(
-                                  height: 40,
-                                  borderRadius: 22,
-                                  color: Theme.of(context).primaryColor,
-                                  width: 100,
-                                  customWidget: Text(
-                                    "حفظ",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1,
-                                  ),
-                                  function: () {
-                                    appInfoBloc.add(AppInfoUpdateEvent(
-                                        data: AppInfoData(
-                                            description: about.text,
-                                            phones: phones)));
-                                  },
-                                )),
+                                        height: 40,
+                                        borderRadius: 22,
+                                        color: Theme.of(context).primaryColor,
+                                        width: 100,
+                                        customWidget: Text(
+                                          "حفظ",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1,
+                                        ),
+                                        function: () {
+                                          appInfoBloc.add(AppInfoUpdateEvent(
+                                              data: AppInfoData(
+                                                  description: about.text,
+                                                  phones: phones)));
+                                        },
+                                      )),
                             const SizedBox(
                               width: 20,
                             ),

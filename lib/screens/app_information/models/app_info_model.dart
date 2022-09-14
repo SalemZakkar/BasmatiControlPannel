@@ -2,17 +2,21 @@
 
 class AppInfoModel {
   AppInfoModel({
-      AppInfoData? data,}){
+    AppInfoData? data,
+  }) {
     _data = data;
-}
+  }
 
   AppInfoModel.fromJson(dynamic json) {
     _data = json['data'] != null ? AppInfoData.fromJson(json['data']) : null;
   }
   AppInfoData? _data;
-AppInfoModel copyWith({  AppInfoData? data,
-}) => AppInfoModel(  data: data ?? _data,
-);
+  AppInfoModel copyWith({
+    AppInfoData? data,
+  }) =>
+      AppInfoModel(
+        data: data ?? _data,
+      );
   AppInfoData? get data => _data;
 
   Map<String, dynamic> toJson() {
@@ -22,7 +26,6 @@ AppInfoModel copyWith({  AppInfoData? data,
     }
     return map;
   }
-
 }
 
 /// id : "000000050000000000000000"
@@ -33,17 +36,18 @@ AppInfoModel copyWith({  AppInfoData? data,
 
 class AppInfoData {
   AppInfoData({
-      String? id, 
-      String? description, 
-      List<String>? whatsApp, 
-      List<String>? phones, 
-      List<String>? mobiles,}){
+    String? id,
+    String? description,
+    List<String>? whatsApp,
+    List<String>? phones,
+    List<String>? mobiles,
+  }) {
     _id = id;
     _description = description;
     _whatsApp = whatsApp;
     _phones = phones;
     _mobiles = mobiles;
-}
+  }
 
   AppInfoData.fromJson(dynamic json) {
     _id = json['id'];
@@ -57,17 +61,20 @@ class AppInfoData {
   List<String>? _whatsApp;
   List<String>? _phones;
   List<String>? _mobiles;
-AppInfoData copyWith({  String? id,
-  String? description,
-  List<String>? whatsApp,
-  List<String>? phones,
-  List<String>? mobiles,
-}) => AppInfoData(  id: id ?? _id,
-  description: description ?? _description,
-  whatsApp: whatsApp ?? _whatsApp,
-  phones: phones ?? _phones,
-  mobiles: mobiles ?? _mobiles,
-);
+  AppInfoData copyWith({
+    String? id,
+    String? description,
+    List<String>? whatsApp,
+    List<String>? phones,
+    List<String>? mobiles,
+  }) =>
+      AppInfoData(
+        id: id ?? _id,
+        description: description ?? _description,
+        whatsApp: whatsApp ?? _whatsApp,
+        phones: phones ?? _phones,
+        mobiles: mobiles ?? _mobiles,
+      );
   String? get id => _id;
   String? get description => _description;
   List<String>? get whatsApp => _whatsApp;
@@ -83,5 +90,4 @@ AppInfoData copyWith({  String? id,
     map['mobiles'] = _mobiles;
     return map;
   }
-
 }

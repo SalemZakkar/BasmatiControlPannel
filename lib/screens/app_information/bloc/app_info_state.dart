@@ -11,9 +11,7 @@ class GetAppInfoSuccess extends AppInfoState {
   GetAppInfoSuccess({required this.appInfoModel});
 }
 
-class UpdateAppInfoSuccess extends AppInfoState {
-
-}
+class UpdateAppInfoSuccess extends AppInfoState {}
 
 class AppInfoFail extends AppInfoState {
   String code;
