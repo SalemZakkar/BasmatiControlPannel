@@ -73,3 +73,5 @@ class Deactivate extends ItemsEvent {
   final String id;
   Deactivate({required this.id});
 }
+
+class ResetItems extends ItemsEvent {}

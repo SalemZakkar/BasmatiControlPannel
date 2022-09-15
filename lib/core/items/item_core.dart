@@ -91,6 +91,8 @@ class ItemsCore {
     form["fullPrice"] = data.data?.fullPrice;
     if (data.data!.warranty?.value != null) {
       form["warranty"] = data.data!.warranty?.toJson();
+    } else {
+      form["warranty"] = null;
     }
     ResponseModel res = await ApiEngine.request(
         requestMethod: RequestMethod.patch,

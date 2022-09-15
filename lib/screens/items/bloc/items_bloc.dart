@@ -25,6 +25,9 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
     on<UploadImageEvent>(_uploadImage);
     on<DeleteImageEvent>(_deleteImage);
     on<DeleteEvent>(_deleteProduct);
+    on<ResetItems>((evet, emit) {
+      emit(ItemsInitial());
+    });
   }
 
   _removePhoto(RemoveItemEvent event, Emitter<ItemsState> emit) {
@@ -64,7 +67,7 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
     ResponseModel res = await ItemsCore.getItemDetails(event.id);
     if (res.success) {
       ItemDetailsModel data =
-          ItemDetailsModel.fromJson(jsonDecode(res.res!.data));
+          ItemDetailsModel.fromJson(jsonDecode(res.res?.data));
       emit(GetItemDetailsSuccess(itemDetailsModel: data));
     } else {
       emit(ItemsFail(code: res.errorCode ?? ""));

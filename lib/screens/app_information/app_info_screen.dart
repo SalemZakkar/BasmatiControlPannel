@@ -28,6 +28,7 @@ class _AppInfoScreenState extends State<AppInfoScreen> {
   List<String> phones = [];
   TextEditingController phone = TextEditingController();
   TextEditingController about = TextEditingController();
+  TextEditingController insta = TextEditingController();
   bool loaded = false;
   @override
   void dispose() {
@@ -58,6 +59,8 @@ class _AppInfoScreenState extends State<AppInfoScreen> {
               phones = state.appInfoModel.data?.whatsApp ?? [];
               about = TextEditingController(
                   text: state.appInfoModel.data?.description ?? "");
+              insta = TextEditingController(
+                  text: state.appInfoModel.data?.instagram);
               loaded = true;
             }
             return MultiBlocListener(
@@ -196,6 +199,31 @@ class _AppInfoScreenState extends State<AppInfoScreen> {
                                       }
                                     },
                                     icon: const Icon(Icons.add))),
+                            SizedBox(
+                              width: 280,
+                              child: ListTile(
+                                  title: Text(
+                                    "Instagram حساب",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline1!
+                                        .copyWith(),
+                                  ),
+                                  subtitle: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: TextFieldHolder(
+                                      width: 240,
+                                      height: 45,
+                                      child: TextFormField(
+                                        controller: insta,
+                                        textDirection: TextDirection.ltr,
+                                        textAlign: TextAlign.start,
+                                        decoration: const InputDecoration(
+                                            hintText: 'أدخل الرابط'),
+                                      ),
+                                    ),
+                                  )),
+                            ),
                             // Padding(
                             //   padding: const EdgeInsets.only(top: 36),
                             //   child: MyCustomButton(
@@ -242,7 +270,9 @@ class _AppInfoScreenState extends State<AppInfoScreen> {
                                           appInfoBloc.add(AppInfoUpdateEvent(
                                               data: AppInfoData(
                                                   description: about.text,
-                                                  phones: phones)));
+                                                  phones: phones,
+                                                  instagram:
+                                                      insta.text.trim())));
                                         },
                                       )),
                             const SizedBox(

@@ -131,7 +131,6 @@ class _AddItemState extends State<ManageItem> {
         builder: (context, state) {
           if (state is! GetItemDetailsSuccess) {
             if (loaded) {
-              refresh();
               loaded = false;
             }
           }
@@ -600,6 +599,7 @@ class _AddItemState extends State<ManageItem> {
                           BlocListener(
                             listener: (context, state) {
                               if (state is ItemSuccess) {
+                                context.read<ItemsBloc>().add(ResetItems());
                                 Navigator.pushNamedAndRemoveUntil(context,
                                     ItemsScreen.routeName, (route) => false);
                               }

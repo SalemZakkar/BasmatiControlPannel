@@ -24,10 +24,6 @@ class ItemsScreen extends StatefulWidget {
 class _ItemsScreenState extends State<ItemsScreen> {
   int skip = 0, limit = 10;
   int? end;
-  int type = 0;
-  int total = 0;
-  bool nameDone = false;
-  bool priceDone = false;
   bool loading = false;
   ScrollController scrollController = ScrollController();
   List<ItemData> items = [];
@@ -58,6 +54,9 @@ class _ItemsScreenState extends State<ItemsScreen> {
   }
 
   void fetch(BuildContext context) {
+    if (loading) {
+      return;
+    }
     String? lower, higher;
     if (Validator.checkPrice(low.text)) {
       lower = low.text;
@@ -296,6 +295,10 @@ class _ItemsScreenState extends State<ItemsScreen> {
             },
             builder: (context, state) {
               if (state is ItemsFail) {
+                items.clear();
+                skip = 0;
+                limit = 10;
+                end = null;
                 return Expanded(
                     child: errorNotification(context, state.code, () {
                   itemsBloc.add(ItemGetEvent(skip: "0", limit: "10"));
