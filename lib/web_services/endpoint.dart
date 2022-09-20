@@ -8,7 +8,7 @@ class EndPoints {
   static const about = '/about';
 //
   static const imagePath = '/static';
-// static const  = '';
+static const user = '/user';
 // static const  = '';
 // static const  = '';
 // static const  = '';

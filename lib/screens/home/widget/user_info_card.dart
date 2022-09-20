@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:web_basmati/screens/home/view_user_screen.dart';
 
+import '../model/user_info_type.dart';
+
 class UserInfoCard extends StatefulWidget {
-  const UserInfoCard({Key? key}) : super(key: key);
+  final Data data;
+  const UserInfoCard({Key? key, required this.data}) : super(key: key);
 
   @override
   State<UserInfoCard> createState() => _UserInfoCardState();
@@ -25,7 +28,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: 20),
             child: Text(
-              "سالم سالم سالم",
+              widget.data.fullName.toString(),
               style:
                   Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 20),
             ),
@@ -36,7 +39,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: 20),
             child: Text(
-              "091234567",
+              widget.data.phone.toString(),
               style:
                   Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 20),
             ),
@@ -58,7 +61,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: 20),
             child: Text(
-              "مشترك",
+              widget.data.isActive.toString() == "true" ?"مشترك" : "غير مشترك",
               style:
                   Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 20),
             ),

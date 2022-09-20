@@ -8,6 +8,8 @@ import 'package:web_basmati/screens/navigation_screen/bloc/navigation_bloc.dart'
 import 'package:web_basmati/screens/splash.dart';
 import 'package:web_basmati/shared/shared_bloc/shared_bloc.dart';
 
+import 'screens/home/bloc/home_bloc.dart';
+
 void main() {
   setPathUrlStrategy();
   runApp(MultiBlocProvider(
@@ -16,6 +18,8 @@ void main() {
       BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
       BlocProvider<ItemsBloc>(create: (context) => ItemsBloc()),
       BlocProvider<SharedBloc>(create: (context) => SharedBloc()),
+      BlocProvider<HomeBloc>(create: (context) => HomeBloc()),
+
     ],
     child: const MyApp(),
   ));

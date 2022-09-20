@@ -153,7 +153,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                               ),
                               function: () {
                                 context.read<AuthBloc>().add(const SignInEvent(
-                                    phone: "+9660000000001",
+                                    phone: "+9660000000000",
                                     password: "P@\$\$w0rd"));
                               },
                             )),
