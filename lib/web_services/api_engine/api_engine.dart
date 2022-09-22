@@ -14,7 +14,6 @@ class ApiEngine {
   static void initDio() {
     myDio = Dio(
       BaseOptions(
-        connectTimeout: 12000,
         receiveTimeout: 12000,
         sendTimeout: 12000,
         validateStatus: (code) {

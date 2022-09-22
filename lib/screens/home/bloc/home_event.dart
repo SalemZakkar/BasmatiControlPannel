@@ -19,3 +19,16 @@ class GetUserInfoByTypeEvent extends HomeEvent {
     required this.type,
   });
 }
+
+class GetUserEvent extends HomeEvent {
+  final String? phone;
+  final int? sub;
+  final int type;
+  final int skip, limit;
+  const GetUserEvent(
+      {this.phone,
+      required this.type,
+      this.sub,
+      required this.skip,
+      required this.limit});
+}

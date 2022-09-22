@@ -19,7 +19,6 @@ void main() {
       BlocProvider<ItemsBloc>(create: (context) => ItemsBloc()),
       BlocProvider<SharedBloc>(create: (context) => SharedBloc()),
       BlocProvider<HomeBloc>(create: (context) => HomeBloc()),
-
     ],
     child: const MyApp(),
   ));

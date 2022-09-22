@@ -4,7 +4,7 @@ import 'package:web_basmati/screens/home/view_user_screen.dart';
 import '../model/user_info_type.dart';
 
 class UserInfoCard extends StatefulWidget {
-  final Data data;
+  final UserMainData data;
   const UserInfoCard({Key? key, required this.data}) : super(key: key);
 
   @override
@@ -42,6 +42,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
               widget.data.phone.toString(),
               style:
                   Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 20),
+              textDirection: TextDirection.ltr,
             ),
           ),
           Container(
@@ -61,7 +62,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: 20),
             child: Text(
-              widget.data.isActive.toString() == "true" ?"مشترك" : "غير مشترك",
+              widget.data.isActive.toString() == "true" ? "مشترك" : "غير مشترك",
               style:
                   Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 20),
             ),

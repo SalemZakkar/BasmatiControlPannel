@@ -11,5 +11,11 @@ class SharedBloc extends Bloc<SharedEvent, SharedState> {
     on<RemoveEventAppInfo>((event, emit) {
       emit(RemoveStateAppInfo(id: event.id));
     });
+    on<GetUsersSharedEvent>((event, emit) {
+      emit(GetUsersState(skip: event.skip, limit: event.limit));
+    });
+    on<ResetUserEvent>((event, emit) {
+      emit(ResetUserState());
+    });
   }
 }

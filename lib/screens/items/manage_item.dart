@@ -4,13 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_basmati/helper/error_message.dart';
 import 'package:web_basmati/screens/items/items_screen.dart';
 import 'package:web_basmati/screens/items/model/item_details_model.dart';
+import 'package:web_basmati/screens/items/widget/delete_button.dart';
 import 'package:web_basmati/screens/items/widget/manage_item_image.dart';
 
 import '../../helper/validator.dart';
-import '../../shared/widget/confirm_dialog.dart';
 import '../../shared/widget/custom_button_widget.dart';
 import '../../shared/widget/error_notification.dart';
-import '../../shared/widget/flush_messages.dart';
 import '../../shared/widget/text_field_holder.dart';
 import 'bloc/items_bloc.dart';
 
@@ -84,48 +83,7 @@ class _AddItemState extends State<ManageItem> {
       appBar: AppBar(
         title: const Text("معلومات المنتج"),
         toolbarHeight: 80,
-        actions: [
-          BlocListener<ItemsBloc, ItemsState>(
-            bloc: deleteBloc,
-            listener: (context, state) {
-              if (state is ItemsFail) {
-                showErrorMessageFlush(
-                    context, errorParse(state.code), state.code);
-              }
-              if (state is ItemSuccess) {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, ItemsScreen.routeName, (route) => false);
-              }
-              if (state is ItemsLoading) {
-                setState(() {
-                  deleting = true;
-                });
-              } else {
-                setState(() {
-                  deleting = false;
-                });
-              }
-            },
-            child: Container(
-              width: 100,
-              alignment: Alignment.center,
-              child: deleting
-                  ? CircularProgressIndicator(
-                      color: Theme.of(context).errorColor,
-                    )
-                  : IconButton(
-                      onPressed: () async {
-                        if (await confirm(context)) {
-                          deleteBloc.add(DeleteEvent(id: widget.id));
-                        } else {}
-                      },
-                      icon: Icon(
-                        Icons.delete,
-                        color: Theme.of(context).errorColor,
-                      )),
-            ),
-          ),
-        ],
+        actions: [ItemDeleteButton(id: widget.id)],
       ),
       body: BlocBuilder<ItemsBloc, ItemsState>(
         builder: (context, state) {
@@ -155,11 +113,15 @@ class _AddItemState extends State<ManageItem> {
                 old = TextEditingController(
                     text: (state.itemDetailsModel.data!.price!
                         .toStringAsFixed(2)));
+              } else {
+                old = TextEditingController();
               }
               if (state.itemDetailsModel.data?.warranty?.value != null) {
                 warranty = TextEditingController(
                     text: state.itemDetailsModel.data?.warranty?.value
                         .toString());
+              } else {
+                warranty = TextEditingController();
               }
 
               images = state.itemDetailsModel.data?.images ?? [];
@@ -401,7 +363,7 @@ class _AddItemState extends State<ManageItem> {
                               alignment: Alignment.centerRight,
                               child: TextFieldHolder(
                                 width: 340,
-                                height: 70,
+                                height: 65,
                                 child: TextFormField(
                                   controller: warranty,
                                   textAlign: TextAlign.center,
@@ -426,101 +388,49 @@ class _AddItemState extends State<ManageItem> {
                               ),
                             )),
                       ),
-                      Container(
-                        width: size.width,
-                        height: 80,
-                        alignment: Alignment.centerRight,
-                        child: ListTile(
-                          title: Text(
-                            "تفعيل ؟",
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Checkbox(
+                              value: active,
+                              onChanged: (value) {
+                                setState(() {
+                                  active = !active;
+                                });
+                              }),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Text(
+                            "مفعل",
                             style: Theme.of(context).textTheme.headline1,
-                          ),
-                          subtitle: Row(
-                            children: [
-                              Radio(
-                                  value: true,
-                                  groupValue: active,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      active = true;
-                                    });
-                                  }),
-                              Text(
-                                "نعم",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(fontWeight: FontWeight.w500),
-                              ),
-                              const SizedBox(
-                                width: 50,
-                              ),
-                              Radio(
-                                  value: false,
-                                  groupValue: active,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      active = false;
-                                    });
-                                  }),
-                              Text(
-                                "لا",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                        ),
+                          )
+                        ],
                       ),
-                      Container(
-                        width: size.width,
-                        height: 80,
-                        alignment: Alignment.centerRight,
-                        child: ListTile(
-                          title: Text(
-                            "أهم العروض ؟",
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Checkbox(
+                              value: fav,
+                              onChanged: (value) {
+                                setState(() {
+                                  fav = !fav;
+                                });
+                              }),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Text(
+                            "أهم العروض",
                             style: Theme.of(context).textTheme.headline1,
-                          ),
-                          subtitle: Row(
-                            children: [
-                              Radio(
-                                  value: true,
-                                  groupValue: fav,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      fav = true;
-                                    });
-                                  }),
-                              Text(
-                                "نعم",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(fontWeight: FontWeight.w500),
-                              ),
-                              const SizedBox(
-                                width: 50,
-                              ),
-                              Radio(
-                                  value: false,
-                                  groupValue: fav,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      fav = false;
-                                    });
-                                  }),
-                              Text(
-                                "لا",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                        ),
+                          )
+                        ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -624,42 +534,6 @@ class _AddItemState extends State<ManageItem> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                // Padding(
-                                //   padding: const EdgeInsets.only(top: 19),
-                                //   child: IconButton(
-                                //       onPressed: () {
-                                //         setState(() {
-                                //           active = !active;
-                                //         });
-                                //       },
-                                //       icon: active
-                                //           ? const Icon(
-                                //               Icons.circle,
-                                //               color: Colors.green,
-                                //             )
-                                //           : const Icon(
-                                //               Icons.hide_source,
-                                //               color: Colors.red,
-                                //             )),
-                                // ),
-                                // Padding(
-                                //   padding: const EdgeInsets.only(top: 19),
-                                //   child: IconButton(
-                                //       onPressed: () {
-                                //         setState(() {
-                                //           fav = !fav;
-                                //         });
-                                //       },
-                                //       icon: fav
-                                //           ? const Icon(
-                                //               Icons.favorite,
-                                //               color: Colors.red,
-                                //             )
-                                //           : const Icon(
-                                //               Icons.favorite_border,
-                                //               color: Colors.red,
-                                //             )),
-                                // ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 20),
                                   child: (loading

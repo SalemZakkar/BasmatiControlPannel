@@ -63,6 +63,7 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
   }
 
   _getItemDetails(ItemGetDetails event, Emitter<ItemsState> emit) async {
+    emit(ItemsInitial());
     emit(ItemsLoading());
     ResponseModel res = await ItemsCore.getItemDetails(event.id);
     if (res.success) {

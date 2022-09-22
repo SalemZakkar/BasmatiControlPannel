@@ -17,13 +17,16 @@ ThemeData lightTheme = ThemeData(
         fontFamily: "Cairo",
         fontWeight: FontWeight.w600),
     centerTitle: false,
-    backgroundColor: const Color.fromRGBO(249, 249, 249, 1.0),
+    backgroundColor: const Color(0xFFEEEFFF),
     iconTheme: IconThemeData(color: primaryColor),
     shadowColor: const Color.fromRGBO(249, 249, 249, 0.0),
   ),
+  checkboxTheme: CheckboxThemeData(
+    fillColor: MaterialStateProperty.all(primaryColor),
+  ),
   errorColor: Colors.red,
   cardColor: Colors.white,
-  scaffoldBackgroundColor: const Color.fromRGBO(249, 249, 249, 1.0),
+  scaffoldBackgroundColor: const Color(0xFFEEEFFF),
   listTileTheme: ListTileThemeData(
     iconColor: primaryColor,
   ),

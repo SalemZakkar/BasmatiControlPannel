@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:web_basmati/helper/error_message.dart';
-import 'package:web_basmati/helper/helper_export.dart';
+import 'package:web_basmati/screens/home/widget/app_bar.dart';
 import 'package:web_basmati/screens/home/widget/table_title.dart';
 import 'package:web_basmati/screens/home/widget/user_info_card.dart';
 import 'package:web_basmati/screens/navigation_screen/drawer.dart';
+import 'package:web_basmati/shared/shared_bloc/shared_bloc.dart';
+import 'package:web_basmati/shared/widget/error_notification.dart';
 
-import '../../shared/widget/flush_messages.dart';
-import '../../shared/widget/text_field_holder.dart';
 import 'bloc/home_bloc.dart';
+import 'model/user_info_type.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -19,12 +19,40 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String current = "غير محدد";
-  var userType = ["غير محدد", "مشترك", "غير مشترك"];
-  FocusNode focusNode = FocusNode();
-  String currentEmployees = "غير محدد";
-  var employeesType = ["غير محدد", "عميل", "مشرف"];
-  TextEditingController controller = TextEditingController();
+  int skip = 0, limit = 10;
+  int? end;
+  bool loading = false;
+  List<UserMainData> data = [];
+  ScrollController controller = ScrollController();
+  void fetch() {
+    if (loading) {
+      return;
+    }
+    if (data.length >= (end ?? double.infinity)) {
+      return;
+    }
+    debugPrint("READ");
+    context
+        .read<SharedBloc>()
+        .add(GetUsersSharedEvent(skip: skip, limit: limit));
+  }
+
+  @override
+  void initState() {
+    fetch();
+    controller.addListener(() {
+      if (controller.offset == controller.position.maxScrollExtent) {
+        fetch();
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,229 +63,122 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text("معلومات المستخدمين"),
         toolbarHeight: 80,
       ),
-      body: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        constraints: const BoxConstraints.expand(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              width: size.width * 0.8,
-              height: 90,
-              alignment: Alignment.centerRight,
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 330,
-                    height: 80,
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    child: ListTile(
-                      title: Text(
-                        "رقم الهاتف",
-                        style: Theme.of(context).textTheme.headline1,
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<SharedBloc, SharedState>(
+            listener: (context, state) {
+              if (state is ResetUserState) {
+                debugPrint("RESET");
+                setState(() {
+                  data.clear();
+                  skip = 0;
+                  limit = 10;
+                  end = null;
+                  loading = false;
+                });
+                fetch();
+              }
+            },
+          ),
+          BlocListener<HomeBloc, HomeState>(
+            listener: (context, state) {
+              if (state.stateStatusUserInfo.success == true) {
+                end = state.userInfoTypeList.totalRecords?.toInt() ?? 0;
+                List<UserMainData> nData = state.userInfoTypeList.data ?? [];
+                setState(() {
+                  for (var v in nData) {
+                    data.add(v);
+                  }
+                  data = data.toSet().toList();
+                });
+                skip += 10;
+                limit += 10;
+              }
+              if (state.stateStatusUserInfo.inProgress == true) {
+                setState(() {
+                  loading = true;
+                });
+              } else {
+                setState(() {
+                  loading = false;
+                });
+              }
+            },
+          )
+        ],
+        child: Container(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          constraints: const BoxConstraints.expand(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const HomeSearchBar(),
+              Expanded(
+                  child: Container(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const TableTitle(),
+                    Container(
+                      // width: size.width*0.75,
+                      height: size.height * 0.56,
+                      width: size.width * 0.85,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(22),
                       ),
-                      subtitle: TextFieldHolder(
-                        height: 40,
-                        width: 300,
-                        child: TextFormField(
-                          controller: controller,
-                          textDirection: TextDirection.ltr,
-                          decoration: InputDecoration(
-                              prefixIcon: GestureDetector(
-                                  onTap: () {
-                                    if (Validator.checkNumber(controller.text)) {
-                                      context
-                                          .read<HomeBloc>()
-                                          .add(GetUserInfoByTypeEvent(
-                                            searchByPhone: true,
-                                            phoneNumber: controller.text.toString(),
-                                            type: "",
-                                          ));
-                                    } else {
-                                      print("is not valid");
-                                    }
-                                  },
-                                  child: const Icon(Icons.search)),
-
-                              // prefix: Icon(Icons.search),
-                              contentPadding: const EdgeInsets.all(10),
-                              hintText: "أدخل رقم الهاتف"),
-                        ),
-                      ),
-                      // trailing: Padding(
-                      //   padding: const EdgeInsets.only(top: 27),
-                      //   child: IconButton(
-                      //     onPressed: () {},
-                      //     icon: Icon(
-                      //       Icons.search,
-                      //       color: Theme.of(context).primaryColor,
-                      //     ),
-                      //   ),
-                      // ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    width: 300,
-                    height: 80,
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    alignment: Alignment.topCenter,
-                    child: ListTile(
-                      title: Text(
-                        "نوع الإشتراك",
-                        style: Theme.of(context).textTheme.headline1,
-                      ),
-                      subtitle: TextFieldHolder(
-                        width: 300,
-                        height: 40,
-                        child: Container(
-                          width: 300,
-                          height: 40,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).cardColor,
-                              borderRadius: BorderRadius.circular(12)),
-                          padding: const EdgeInsets.only(right: 10),
-                          child: DropdownButtonFormField(
-                            focusNode: focusNode,
-                            value: current,
-                            items: userType.map((String data) {
-                              return DropdownMenuItem(
-                                value: data,
-                                child: Text(data),
-                              );
-                            }).toList(),
-                            onChanged: (data) {
+                      alignment: Alignment.topRight,
+                      child: BlocBuilder<HomeBloc, HomeState>(
+                        builder: (context, state) {
+                          if (state.stateStatusUserInfo.failure == true) {
+                            return errorNotification(context,
+                                state.stateStatusUserInfo.errorMessage ?? "999",
+                                () {
                               setState(() {
-                                current = data.toString();
+                                data.clear();
+                                skip = 0;
+                                limit = 10;
                               });
-                              if (current != "غير محدد") {
-                                context.read<HomeBloc>().add(GetUserInfoByTypeEvent(
-                                    searchByPhone: false,
-                                    phoneNumber: "",
-                                    type: current));
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    width: 300,
-                    height: 80,
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    alignment: Alignment.topCenter,
-                    child: ListTile(
-                      title: Text(
-                        "نوع الحساب",
-                        style: Theme.of(context).textTheme.headline1,
-                      ),
-                      subtitle: TextFieldHolder(
-                        width: 300,
-                        height: 40,
-                        child: Container(
-                          width: 300,
-                          height: 40,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).cardColor,
-                              borderRadius: BorderRadius.circular(12)),
-                          padding: const EdgeInsets.only(right: 10),
-                          child: DropdownButtonFormField(
-                            focusNode: focusNode,
-                            value: currentEmployees,
-                            items: employeesType.map((String data) {
-                              return DropdownMenuItem(
-                                value: data,
-                                child: Text(data),
-                              );
-                            }).toList(),
-                            onChanged: (data) {
-                              setState(() {
-                                currentEmployees = data.toString();
-                              });
-                              if (currentEmployees != "غير محدد") {
-                                context.read<HomeBloc>().add(GetUserInfoByTypeEvent(
-                                      searchByPhone: false,
-                                      phoneNumber: "",
-                                      type: currentEmployees,
-                                    ));
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-                child: Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const TableTitle(),
-                  Container(
-                    // width: size.width*0.75,
-                    height: size.height * 0.56,
-                    width: size.width * 0.85,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(22),
-                    ),
-                    alignment: Alignment.topRight,
-                    child: BlocConsumer<HomeBloc, HomeState>(
-                      listener: (context, state) {
-                        if (state.stateStatusUserInfo.failure == true) {
-                          showErrorMessageFlush(
-                              context,
-                              errorParse(
-                                  state.stateStatusUserInfo.errorMessage.toString()),
-                              state.stateStatusUserInfo.errorMessage ?? "");
-                        }
-                      },
-                      builder: (context, state) {
-                        if (state.stateStatusUserInfo.failure == true) {
-                          return const Text("");
-                        } else if (state.stateStatusUserInfo.success == true) {
-                          if (state.userInfoTypeList.data!.isEmpty) {
-                            return Text(state.userInfoTypeList.data!.length.toString());
-                          } else {
-                            return Scrollbar(
-                              thumbVisibility: true,
-                              interactive: false,
-                              child: ListView.builder(
-                                itemCount: state.userInfoTypeList.data!.length,
-                                physics: const BouncingScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  return UserInfoCard(
-                                    data: state.userInfoTypeList.data![index],
-                                  );
-                                },
-                              ),
-                            );
+                              fetch();
+                            });
                           }
-                        } else if (state.stateStatusUserInfo.inProgress == true) {
-                          return const Center(child: CircularProgressIndicator());
-                        } else {
-                          return const Text("");
-                        }
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ))
-          ],
+                          return Scrollbar(
+                            thumbVisibility: true,
+                            interactive: false,
+                            controller: controller,
+                            child: ListView.builder(
+                              controller: controller,
+                              itemCount: data.length + 1,
+                              physics: const BouncingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                if (index < data.length) {
+                                  return UserInfoCard(
+                                    data: data[index],
+                                  );
+                                } else {
+                                  return SizedBox(
+                                    height: 40,
+                                    width: 60,
+                                    child: (loading
+                                        ? const Center(
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : const Center()),
+                                  );
+                                }
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ))
+            ],
+          ),
         ),
       ),
     );

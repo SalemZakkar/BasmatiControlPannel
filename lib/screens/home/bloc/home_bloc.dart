@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_basmati/screens/home/model/model_export.dart';
 
@@ -9,7 +8,6 @@ import '../../../core/home/home_core.dart';
 import '../../../web_services/api_engine/response_model.dart';
 
 part 'home_event.dart';
-
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
@@ -21,46 +19,25 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeEvent>((event, emit) {
       // TODO: implement event handler
     });
-    on<GetUserInfoByTypeEvent>(_getUserInfoByTypeEvent);
+    on<GetUserEvent>(_getUser);
   }
-
-  _getUserInfoByTypeEvent(GetUserInfoByTypeEvent event, Emitter<HomeState> emit) async {
+  _getUser(GetUserEvent event, Emitter<HomeState> emit) async {
     emit(GetUserInfoByState(
-        stateStatusUserInfo:
-            StateStatus().copyWith(inProgress: true, success: false, failure: false),
+        stateStatusUserInfo: StateStatus().copyWith(inProgress: true),
         userInfoTypeList: UserInfoType()));
-
-    Map<String, String> sendData = {};
-    if (event.searchByPhone == true) {
-      sendData = {"phone": event.phoneNumber};
-    } else {
-      if (event.type == "عميل") {
-        sendData = {"type": "Customer"};
-      }
-      if (event.type == "مشرف") {
-        sendData = {"type": "Admin"};
-      }
-
-      if (event.type == "مشترك") {
-        sendData = {"isActive": "true"};
-      }
-      if (event.type == "غير مشترك") {
-        sendData = {"isActive": "false"};
-      }
-    }
-
-    ResponseModel res = await HomeCore.getUserInfoByType(sendData);
+    ResponseModel res = await HomeCore.getUser(
+        event.skip, event.limit, event.phone, event.type, event.sub);
     if (res.success) {
-      UserInfoType data = UserInfoType.fromJson(jsonDecode(res.res?.data));
-
+      UserInfoType userInfoType =
+          UserInfoType.fromJson(jsonDecode(res.res?.data));
       emit(GetUserInfoByState(
-          stateStatusUserInfo: StateStatus().copyWith(inProgress: false, success: true),
-          userInfoTypeList: data));
+          stateStatusUserInfo: StateStatus().copyWith(success: true),
+          userInfoTypeList: userInfoType));
     } else {
       emit(GetUserInfoByState(
           stateStatusUserInfo: StateStatus()
-              .copyWith(inProgress: false, failure: true, errorMessage: res.errorCode),
-          userInfoTypeList: state.userInfoTypeList));
+              .copyWith(failure: true, errorMessage: res.errorCode ?? "999"),
+          userInfoTypeList: UserInfoType()));
     }
   }
 }

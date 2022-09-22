@@ -8,3 +8,10 @@ class RemoveStateAppInfo extends SharedState {
   final int id;
   RemoveStateAppInfo({required this.id});
 }
+
+class GetUsersState extends SharedState {
+  final int skip, limit;
+  GetUsersState({required this.skip, required this.limit});
+}
+
+class ResetUserState extends SharedState {}
