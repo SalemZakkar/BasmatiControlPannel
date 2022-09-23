@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../helper/error_message.dart';
 import '../../../shared/widget/confirm_dialog.dart';
 import '../../../shared/widget/flush_messages.dart';
 import '../bloc/items_bloc.dart';
@@ -24,7 +23,7 @@ class _ItemDeleteButtonState extends State<ItemDeleteButton> {
       bloc: deleteBloc,
       listener: (context, state) {
         if (state is ItemsFail) {
-          showErrorMessageFlush(context, errorParse(state.code), state.code);
+          showErrorMessageFlush(context, state.code);
         }
         if (state is ItemSuccess) {
           Navigator.pushNamedAndRemoveUntil(

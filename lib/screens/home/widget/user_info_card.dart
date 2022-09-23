@@ -73,7 +73,8 @@ class _UserInfoCardState extends State<UserInfoCard> {
               child: IconButton(
                 icon: const Icon(Icons.arrow_forward_rounded),
                 onPressed: () {
-                  Navigator.pushNamed(context, ViewUserScreen.routeName);
+                  Navigator.pushNamed(context, ViewUserScreen.routeName,
+                      arguments: widget.data.id.toString());
                 },
               ),
             ),

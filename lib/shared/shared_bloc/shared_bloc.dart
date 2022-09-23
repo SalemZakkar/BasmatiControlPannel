@@ -17,5 +17,8 @@ class SharedBloc extends Bloc<SharedEvent, SharedState> {
     on<ResetUserEvent>((event, emit) {
       emit(ResetUserState());
     });
+    on<ResetItemEvent>((event, emit) {
+      emit(ResetItemsState());
+    });
   }
 }

@@ -15,3 +15,5 @@ class GetUsersState extends SharedState {
 }
 
 class ResetUserState extends SharedState {}
+
+class ResetItemsState extends SharedState {}

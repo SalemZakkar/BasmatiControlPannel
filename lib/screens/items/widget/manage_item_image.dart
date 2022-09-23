@@ -3,9 +3,9 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_basmati/screens/items/bloc/items_bloc.dart';
+import 'package:web_basmati/shared/shared_bloc/shared_bloc.dart';
 import 'package:web_basmati/web_services/web_services_export.dart';
 
-import '../../../helper/error_message.dart';
 import '../../../shared/widget/flush_messages.dart';
 
 class ManageItemImage extends StatefulWidget {
@@ -37,9 +37,10 @@ class _ManageItemImageState extends State<ManageItemImage> {
         }
         if (state is ItemSuccess) {
           context.read<ItemsBloc>().add(ItemGetDetails(id: widget.itemId));
+          context.read<SharedBloc>().add(ResetItemEvent());
         }
         if (state is ItemsFail) {
-          showErrorMessageFlush(context, errorParse(state.code), state.code);
+          showErrorMessageFlush(context, state.code);
         }
       },
       child: Padding(

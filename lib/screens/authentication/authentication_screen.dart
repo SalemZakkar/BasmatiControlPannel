@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_basmati/helper/error_message.dart';
+import 'package:web_basmati/helper/helper_export.dart';
 import 'package:web_basmati/screens/authentication/bloc/auth_bloc.dart';
 
 import '../../shared/widget/custom_button_widget.dart';
+import '../../shared/widget/flush_messages.dart';
 import '../../shared/widget/text_field_holder.dart';
 import '../home/home_screen.dart';
 
@@ -20,7 +23,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   bool loading = false;
   bool error = false;
   String errorText = "";
-  String phone = "";
+  TextEditingController phone = TextEditingController(text: "0000000000");
+  TextEditingController password = TextEditingController(text: "P@\$\$w0rd");
   bool p = false;
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         constraints: const BoxConstraints.expand(),
         alignment: Alignment.center,
         child: Container(
-            height: 400,
+            height: 410,
             width: 400,
             decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
@@ -74,69 +78,85 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                       const SizedBox(
                         height: 40,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 320,
-                            child: ListTile(
-                                title: Text(
-                                  "رقم الهاتف",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline1!
-                                      .copyWith(),
+                      SizedBox(
+                        width: 320,
+                        child: ListTile(
+                            title: Text(
+                              "رقم الهاتف",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(),
+                            ),
+                            subtitle: Align(
+                              alignment: Alignment.centerRight,
+                              child: TextFieldHolder(
+                                width: 270,
+                                height: 70,
+                                child: TextFormField(
+                                  textDirection: TextDirection.ltr,
+                                  textAlign: TextAlign.start,
+                                  controller: phone,
+                                  enableInteractiveSelection: false,
+                                  keyboardType: TextInputType.multiline,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    LengthLimitingTextInputFormatter(9)
+                                  ],
+                                  validator: (value) {
+                                    if (!Validator.checkNumber(phone.text) ||
+                                        phone.text.length < 9) {
+                                      return "رقم الهاتف غير صحبح";
+                                    }
+                                    return null;
+                                  },
+                                  onChanged: (e) {},
+                                  decoration: InputDecoration(
+                                      suffix: const Text("  966+"),
+                                      fillColor: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      hintText: 'أدخل رقم الهاتف'),
                                 ),
-                                subtitle: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: TextFieldHolder(
-                                    width: 270,
-                                    height: 45,
-                                    child: TextFormField(
-                                      enableInteractiveSelection: false,
-                                      keyboardType: TextInputType.multiline,
-                                      onChanged: (e) {},
-                                      decoration: InputDecoration(
-                                          fillColor: Theme.of(context)
-                                              .scaffoldBackgroundColor,
-                                          hintText: 'أدخل رقم الهاتف'),
-                                    ),
-                                  ),
-                                )),
-                          ),
-                        ],
+                              ),
+                            )),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 320,
-                            child: ListTile(
-                                title: Text(
-                                  "كلمة المرور",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline1!
-                                      .copyWith(),
+                      SizedBox(
+                        width: 320,
+                        child: ListTile(
+                            title: Text(
+                              "كلمة المرور",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(),
+                            ),
+                            subtitle: Align(
+                              alignment: Alignment.centerRight,
+                              child: TextFieldHolder(
+                                width: 270,
+                                height: 70,
+                                child: TextFormField(
+                                  obscureText: true,
+                                  textDirection: TextDirection.ltr,
+                                  textAlign: TextAlign.start,
+                                  controller: password,
+                                  validator: (value) {
+                                    if (!Validator.checkPassword(
+                                        password.text)) {
+                                      showErrorMessageFlushNoCode(
+                                          context,
+                                          "كلمة المرور يجب أن تكون بين 8 احرف الى 24 حرف\n"
+                                          "يجب أن تحتوي احرف و أرقام و رموز");
+                                      return "كلمة المرور لا يمكن استخدامها";
+                                    }
+                                  },
+                                  decoration: InputDecoration(
+                                      fillColor: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      hintText: 'أدخل كلمة المرور'),
                                 ),
-                                subtitle: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: TextFieldHolder(
-                                    width: 270,
-                                    height: 45,
-                                    child: TextFormField(
-                                      decoration: InputDecoration(
-                                          fillColor: Theme.of(context)
-                                              .scaffoldBackgroundColor,
-                                          hintText: 'أدخل كلمة المرور'),
-                                    ),
-                                  ),
-                                )),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
+                              ),
+                            )),
                       ),
                       (loading
                           ? const Center(
@@ -152,9 +172,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                 style: Theme.of(context).textTheme.bodyText1,
                               ),
                               function: () {
-                                context.read<AuthBloc>().add(const SignInEvent(
-                                    phone: "+9660000000000",
-                                    password: "P@\$\$w0rd"));
+                                if (formGlobalKey.currentState!.validate()) {
+                                  context.read<AuthBloc>().add(SignInEvent(
+                                      phone: "+966${phone.text}",
+                                      password: password.text));
+                                }
                               },
                             )),
                       const SizedBox(

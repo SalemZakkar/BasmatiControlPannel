@@ -8,6 +8,7 @@ import 'package:web_basmati/screens/items/widget/delete_button.dart';
 import 'package:web_basmati/screens/items/widget/manage_item_image.dart';
 
 import '../../helper/validator.dart';
+import '../../shared/shared_bloc/shared_bloc.dart';
 import '../../shared/widget/custom_button_widget.dart';
 import '../../shared/widget/error_notification.dart';
 import '../../shared/widget/text_field_holder.dart';
@@ -85,158 +86,188 @@ class _AddItemState extends State<ManageItem> {
         toolbarHeight: 80,
         actions: [ItemDeleteButton(id: widget.id)],
       ),
-      body: BlocBuilder<ItemsBloc, ItemsState>(
-        builder: (context, state) {
-          if (state is! GetItemDetailsSuccess) {
-            if (loaded) {
-              loaded = false;
-            }
-          }
-          if (state is ItemsFail) {
-            return errorNotification(context, state.code, () {
-              context.read<ItemsBloc>().add(ItemGetDetails(id: widget.id));
-            });
-          } else if (state is ItemsLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (state is GetItemDetailsSuccess) {
-            if (!loaded) {
-              itemName = TextEditingController(
-                  text: state.itemDetailsModel.data!.name!);
-              itemDes = TextEditingController(
-                  text: state.itemDetailsModel.data!.description!);
-              price = TextEditingController(
-                  text: state.itemDetailsModel.data!.fullPrice!
-                      .toStringAsFixed(2));
-              if (state.itemDetailsModel.data?.price != null) {
-                old = TextEditingController(
-                    text: (state.itemDetailsModel.data!.price!
-                        .toStringAsFixed(2)));
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<ItemsBloc, ItemsState>(
+            bloc: imagesBloc,
+            listener: (context, state) {
+              if (state is ItemsLoading) {
+                setState(() {
+                  uploading = true;
+                  imageError = false;
+                });
               } else {
-                old = TextEditingController();
+                setState(() {
+                  uploading = false;
+                });
               }
-              if (state.itemDetailsModel.data?.warranty?.value != null) {
-                warranty = TextEditingController(
-                    text: state.itemDetailsModel.data?.warranty?.value
-                        .toString());
+              if (state is! ItemsFail) {
+                setState(() {
+                  imageError = false;
+                });
+              }
+              if (state is ItemSuccess) {
+                context.read<ItemsBloc>().add(ItemGetDetails(id: widget.id));
+                context.read<SharedBloc>().add(ResetItemEvent());
+              }
+              if (state is ItemsFail) {
+                //                 showErrorMessageFlush(context, errorParse(state.code), state.code);
+                setState(() {
+                  imageErrorText = errorParse(state.code);
+                  imageError = true;
+                });
+              }
+            },
+          ),
+          BlocListener(
+            listener: (context, state) {
+              if (state is ItemSuccess) {
+                context.read<ItemsBloc>().add(ResetItems());
+                Navigator.pushNamedAndRemoveUntil(
+                    context, ItemsScreen.routeName, (route) => false);
+              }
+              if (state is ItemsLoading) {
+                setState(() {
+                  loading = true;
+                  mainError = false;
+                });
               } else {
-                warranty = TextEditingController();
+                setState(() {
+                  loading = false;
+                });
+              }
+              if (state is ItemsFail) {
+                setState(() {
+                  error = errorParse(state.code);
+                  mainError = true;
+                });
+              }
+            },
+            bloc: itemsBloc,
+          ),
+        ],
+        child: BlocBuilder<ItemsBloc, ItemsState>(
+          builder: (context, state) {
+            if (state is! GetItemDetailsSuccess) {
+              if (loaded) {
+                loaded = false;
+              }
+            }
+            if (state is ItemsFail) {
+              return errorNotification(context, state.code, () {
+                context.read<ItemsBloc>().add(ItemGetDetails(id: widget.id));
+              });
+            } else if (state is ItemsLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is GetItemDetailsSuccess) {
+              if (!loaded) {
+                itemName = TextEditingController(
+                    text: state.itemDetailsModel.data!.name!);
+                itemDes = TextEditingController(
+                    text: state.itemDetailsModel.data!.description!);
+                price = TextEditingController(
+                    text: state.itemDetailsModel.data!.fullPrice!
+                        .toStringAsFixed(2));
+                if (state.itemDetailsModel.data?.price != null) {
+                  old = TextEditingController(
+                      text: (state.itemDetailsModel.data!.price!
+                          .toStringAsFixed(2)));
+                } else {
+                  old = TextEditingController();
+                }
+                if (state.itemDetailsModel.data?.warranty?.value != null) {
+                  warranty = TextEditingController(
+                      text: state.itemDetailsModel.data?.warranty?.value
+                          .toString());
+                } else {
+                  warranty = TextEditingController();
+                }
+
+                images = state.itemDetailsModel.data?.images ?? [];
+                active = state.itemDetailsModel.data?.isActive ?? false;
+                fav = state.itemDetailsModel.data?.isSpecial ?? false;
+                loaded = true;
               }
 
-              images = state.itemDetailsModel.data?.images ?? [];
-              active = state.itemDetailsModel.data?.isActive ?? false;
-              fav = state.itemDetailsModel.data?.isSpecial ?? false;
-              loaded = true;
-            }
-
-            return Form(
-              key: key,
-              child: Container(
-                constraints: const BoxConstraints.expand(),
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        alignment: Alignment.centerRight,
-                        width: size.width,
-                        height: 140,
-                        child: Container(
-                          height: 100,
-                          width: 330,
+              return Form(
+                key: key,
+                child: Container(
+                  constraints: const BoxConstraints.expand(),
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
                           alignment: Alignment.centerRight,
-                          child: ListTile(
-                            title: Text(
-                              "اسم المنتج",
-                              style: Theme.of(context).textTheme.headline1,
-                            ),
-                            subtitle: TextFieldHolder(
-                              width: 330,
-                              height: 80,
-                              child: TextFormField(
-                                controller: itemName,
-                                onTap: () {
-                                  itemDes.selection = TextSelection(
-                                      baseOffset: itemDes.selection.baseOffset,
-                                      extentOffset:
-                                          itemDes.selection.extentOffset,
-                                      affinity: TextAffinity.upstream,
-                                      isDirectional: true);
-                                },
-                                decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.all(10),
-                                    hintText: "أدخل اسم المنتج"),
-                                validator: (value) {
-                                  if (!Validator.checkName(value ?? "")) {
-                                    return "الإسم غير صحيح";
-                                  }
-                                  return null;
-                                },
+                          width: size.width,
+                          height: 140,
+                          child: Container(
+                            height: 100,
+                            width: 330,
+                            alignment: Alignment.centerRight,
+                            child: ListTile(
+                              title: Text(
+                                "اسم المنتج",
+                                style: Theme.of(context).textTheme.headline1,
+                              ),
+                              subtitle: TextFieldHolder(
+                                width: 330,
+                                height: 80,
+                                child: TextFormField(
+                                  controller: itemName,
+                                  onTap: () {
+                                    itemDes.selection = TextSelection(
+                                        baseOffset:
+                                            itemDes.selection.baseOffset,
+                                        extentOffset:
+                                            itemDes.selection.extentOffset,
+                                        affinity: TextAffinity.upstream,
+                                        isDirectional: true);
+                                  },
+                                  decoration: const InputDecoration(
+                                      contentPadding: EdgeInsets.all(10),
+                                      hintText: "أدخل اسم المنتج"),
+                                  validator: (value) {
+                                    if (!Validator.checkName(value ?? "")) {
+                                      return "الإسم غير صحيح";
+                                    }
+                                    return null;
+                                  },
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      Container(
-                        height: images.isEmpty ? 0 : 200,
-                        width: MediaQuery.of(context).size.width,
-                        alignment: Alignment.center,
-                        child: (images.isEmpty
-                            ? const SizedBox()
-                            : ReorderableListView.builder(
-                                footer: const SizedBox(),
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) {
-                                  return ManageItemImage(
-                                    id: images[index],
-                                    itemId: widget.id,
-                                    key: Key(index.toString()),
-                                  );
-                                },
-                                itemCount: images.length,
-                                onReorder: (old, n) {
-                                  if (old < n) {
-                                    n -= 1;
-                                  }
-                                  String url = images.removeAt(old);
-                                  images.insert(n, url);
-                                })),
-                      ),
-                      BlocListener<ItemsBloc, ItemsState>(
-                        bloc: imagesBloc,
-                        listener: (context, state) {
-                          if (state is ItemsLoading) {
-                            setState(() {
-                              uploading = true;
-                              imageError = false;
-                            });
-                          } else {
-                            setState(() {
-                              uploading = false;
-                            });
-                          }
-                          if (state is! ItemsFail) {
-                            setState(() {
-                              imageError = false;
-                            });
-                          }
-                          if (state is ItemSuccess) {
-                            context
-                                .read<ItemsBloc>()
-                                .add(ItemGetDetails(id: widget.id));
-                          }
-                          if (state is ItemsFail) {
-                            //                 showErrorMessageFlush(context, errorParse(state.code), state.code);
-                            setState(() {
-                              imageErrorText = errorParse(state.code);
-                              imageError = true;
-                            });
-                          }
-                        },
-                        child: Row(
+                        Container(
+                          height: images.isEmpty ? 0 : 200,
+                          width: MediaQuery.of(context).size.width,
+                          alignment: Alignment.center,
+                          child: (images.isEmpty
+                              ? const SizedBox()
+                              : ReorderableListView.builder(
+                                  footer: const SizedBox(),
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index) {
+                                    return ManageItemImage(
+                                      id: images[index],
+                                      itemId: widget.id,
+                                      key: Key(index.toString()),
+                                    );
+                                  },
+                                  itemCount: images.length,
+                                  onReorder: (old, n) {
+                                    if (old < n) {
+                                      n -= 1;
+                                    }
+                                    String url = images.removeAt(old);
+                                    images.insert(n, url);
+                                  })),
+                        ),
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             const SizedBox(
@@ -304,234 +335,208 @@ class _AddItemState extends State<ManageItem> {
                                 : const SizedBox(),
                           ],
                         ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        height: 250,
-                        alignment: Alignment.centerRight,
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        child: ListTile(
-                          title: Text(
-                            "وصف المنتج",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline1!
-                                .copyWith(),
-                          ),
-                          subtitle: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              TextFieldHolder(
-                                  height: 200,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.8,
-                                  child: TextFormField(
-                                    controller: itemDes,
-                                    textAlign: TextAlign.start,
-                                    textAlignVertical: TextAlignVertical.top,
-                                    decoration: const InputDecoration(
-                                        hintText: "تفاصيل المنتج"),
-                                    maxLines: null,
-                                    expands: true,
-                                    validator: (value) {
-                                      if (!Validator.checkDescription(
-                                          value ?? "")) {
-                                        return "التفاصيل غير صالحة";
-                                      }
-                                      return null;
-                                    },
-                                    keyboardType: TextInputType.multiline,
-                                  ))
-                            ],
-                          ),
+                        const SizedBox(
+                          height: 10,
                         ),
-                      ),
-                      SizedBox(
-                        width: 200,
-                        child: ListTile(
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          height: 250,
+                          alignment: Alignment.centerRight,
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          child: ListTile(
                             title: Text(
-                              "الضمان",
+                              "وصف المنتج",
                               style: Theme.of(context)
                                   .textTheme
                                   .headline1!
                                   .copyWith(),
                             ),
-                            subtitle: Align(
-                              alignment: Alignment.centerRight,
-                              child: TextFieldHolder(
-                                width: 340,
-                                height: 65,
-                                child: TextFormField(
-                                  controller: warranty,
-                                  textAlign: TextAlign.center,
-                                  textDirection: TextDirection.ltr,
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return null;
-                                    } else {
-                                      if (value.isEmpty ||
-                                          value.trim().isEmpty) {
-                                        return null;
-                                      }
-                                    }
-                                    if (!Validator.checkPrice(value)) {
-                                      return "الضمان غير صحيح";
-                                    }
-                                    return null;
-                                  },
-                                  decoration: const InputDecoration(
-                                      hintText: 'المدة بالشهور (اختياري)'),
-                                ),
-                              ),
-                            )),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Checkbox(
-                              value: active,
-                              onChanged: (value) {
-                                setState(() {
-                                  active = !active;
-                                });
-                              }),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Text(
-                            "مفعل",
-                            style: Theme.of(context).textTheme.headline1,
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Checkbox(
-                              value: fav,
-                              onChanged: (value) {
-                                setState(() {
-                                  fav = !fav;
-                                });
-                              }),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Text(
-                            "أهم العروض",
-                            style: Theme.of(context).textTheme.headline1,
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: 180,
-                            child: ListTile(
-                                title: Text(
-                                  "السعر",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline1!
-                                      .copyWith(),
-                                ),
-                                subtitle: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: TextFieldHolder(
-                                    width: 240,
-                                    height: 70,
+                            subtitle: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                TextFieldHolder(
+                                    height: 200,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.8,
                                     child: TextFormField(
-                                      controller: price,
+                                      controller: itemDes,
                                       textAlign: TextAlign.start,
-                                      textDirection: TextDirection.ltr,
+                                      textAlignVertical: TextAlignVertical.top,
+                                      decoration: const InputDecoration(
+                                          hintText: "تفاصيل المنتج"),
+                                      maxLines: null,
+                                      expands: true,
                                       validator: (value) {
-                                        if (!Validator.checkPrice(
+                                        if (!Validator.checkDescription(
                                             value ?? "")) {
-                                          return "السعر غير صحيح";
+                                          return "التفاصيل غير صالحة";
                                         }
                                         return null;
                                       },
-                                      decoration: const InputDecoration(
-                                          hintText: '00 ر.س'),
-                                    ),
-                                  ),
-                                )),
+                                      keyboardType: TextInputType.multiline,
+                                    ))
+                              ],
+                            ),
                           ),
-                          SizedBox(
-                            width: 180,
-                            child: ListTile(
-                                title: Text(
-                                  "السعر المخفض",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline1!
-                                      .copyWith(),
-                                ),
-                                subtitle: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: TextFieldHolder(
-                                    width: 240,
-                                    height: 70,
-                                    child: TextFormField(
-                                      controller: old,
-                                      textAlign: TextAlign.start,
-                                      textDirection: TextDirection.ltr,
-                                      validator: (value) {
-                                        if (value == null) {
+                        ),
+                        SizedBox(
+                          width: 200,
+                          child: ListTile(
+                              title: Text(
+                                "الضمان",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline1!
+                                    .copyWith(),
+                              ),
+                              subtitle: Align(
+                                alignment: Alignment.centerRight,
+                                child: TextFieldHolder(
+                                  width: 340,
+                                  height: 65,
+                                  child: TextFormField(
+                                    controller: warranty,
+                                    textAlign: TextAlign.center,
+                                    textDirection: TextDirection.ltr,
+                                    validator: (value) {
+                                      if (value == null) {
+                                        return null;
+                                      } else {
+                                        if (value.isEmpty ||
+                                            value.trim().isEmpty) {
                                           return null;
-                                        } else {
-                                          if (value.isEmpty ||
-                                              value.trim().isEmpty) {
-                                            return null;
-                                          }
                                         }
-                                        if (!Validator.checkPrice(value)) {
-                                          return "السعر غير صحيح";
-                                        }
-                                        return null;
-                                      },
-                                      decoration: const InputDecoration(
-                                          hintText: 'إختياري'),
-                                    ),
+                                      }
+                                      if (!Validator.checkPrice(value)) {
+                                        return "الضمان غير صحيح";
+                                      }
+                                      return null;
+                                    },
+                                    decoration: const InputDecoration(
+                                        hintText: 'المدة بالشهور (اختياري)'),
                                   ),
-                                )),
-                          ),
-                          BlocListener(
-                            listener: (context, state) {
-                              if (state is ItemSuccess) {
-                                context.read<ItemsBloc>().add(ResetItems());
-                                Navigator.pushNamedAndRemoveUntil(context,
-                                    ItemsScreen.routeName, (route) => false);
-                              }
-                              if (state is ItemsLoading) {
-                                setState(() {
-                                  loading = true;
-                                  mainError = false;
-                                });
-                              } else {
-                                setState(() {
-                                  loading = false;
-                                });
-                              }
-                              if (state is ItemsFail) {
-                                setState(() {
-                                  error = errorParse(state.code);
-                                  mainError = true;
-                                });
-                              }
-                            },
-                            bloc: itemsBloc,
-                            child: Row(
+                                ),
+                              )),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Checkbox(
+                                value: active,
+                                onChanged: (value) {
+                                  setState(() {
+                                    active = !active;
+                                  });
+                                }),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Text(
+                              "مفعل",
+                              style: Theme.of(context).textTheme.headline1,
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Checkbox(
+                                value: fav,
+                                onChanged: (value) {
+                                  setState(() {
+                                    fav = !fav;
+                                  });
+                                }),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Text(
+                              "أهم العروض",
+                              style: Theme.of(context).textTheme.headline1,
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: 180,
+                              child: ListTile(
+                                  title: Text(
+                                    "السعر",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline1!
+                                        .copyWith(),
+                                  ),
+                                  subtitle: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: TextFieldHolder(
+                                      width: 240,
+                                      height: 70,
+                                      child: TextFormField(
+                                        controller: price,
+                                        textAlign: TextAlign.start,
+                                        textDirection: TextDirection.ltr,
+                                        validator: (value) {
+                                          if (!Validator.checkPrice(
+                                              value ?? "")) {
+                                            return "السعر غير صحيح";
+                                          }
+                                          return null;
+                                        },
+                                        decoration: const InputDecoration(
+                                            hintText: '00 ر.س'),
+                                      ),
+                                    ),
+                                  )),
+                            ),
+                            SizedBox(
+                              width: 180,
+                              child: ListTile(
+                                  title: Text(
+                                    "السعر المخفض",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline1!
+                                        .copyWith(),
+                                  ),
+                                  subtitle: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: TextFieldHolder(
+                                      width: 240,
+                                      height: 70,
+                                      child: TextFormField(
+                                        controller: old,
+                                        textAlign: TextAlign.start,
+                                        textDirection: TextDirection.ltr,
+                                        validator: (value) {
+                                          if (value == null) {
+                                            return null;
+                                          } else {
+                                            if (value.isEmpty ||
+                                                value.trim().isEmpty) {
+                                              return null;
+                                            }
+                                          }
+                                          if (!Validator.checkPrice(value)) {
+                                            return "السعر غير صحيح";
+                                          }
+                                          return null;
+                                        },
+                                        decoration: const InputDecoration(
+                                            hintText: 'إختياري'),
+                                      ),
+                                    ),
+                                  )),
+                            ),
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Padding(
@@ -601,20 +606,20 @@ class _AddItemState extends State<ManageItem> {
                                           )
                                         : const SizedBox())
                               ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          } else {
-            debugPrint(state.toString());
-            return const SizedBox();
-          }
-        },
+              );
+            } else {
+              debugPrint(state.toString());
+              return const SizedBox();
+            }
+          },
+        ),
       ),
     );
   }

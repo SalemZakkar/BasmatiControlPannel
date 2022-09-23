@@ -3,7 +3,7 @@ class Validator {
     bool containsLetters = false;
     containsLetters = RegExp(r"^(?=.*?[أ-ي])").hasMatch(x) ||
         RegExp(r"^(?=.*?[A-z])").hasMatch(x);
-    return containsLetters;
+    return containsLetters && x.length >= 5;
   }
 
   static bool checkNumber(String x) {
@@ -15,22 +15,15 @@ class Validator {
     }
   }
 
+  static bool checkPassword(String password) {
+    return RegExp(r'^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*-~]).{8,}$')
+        .hasMatch(password);
+  }
+
   static bool checkEmail(String email) {
     return RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(email);
-  }
-
-  static bool checkPassword(String password) {
-    int space = 0;
-    for (int i = 0; i < password.length; i++) {
-      if (password[i] == " ") {
-        space++;
-      }
-    }
-    return space == 0 &&
-        RegExp(r"^(?=.*?[(-}])").hasMatch(password) &&
-        password.length >= 5;
   }
 
   static bool checkDescription(String description) {

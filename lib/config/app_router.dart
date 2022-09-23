@@ -20,7 +20,11 @@ class AppRouter {
       case ItemsScreen.routeName:
         return MaterialPageRoute(builder: (_) => const ItemsScreen());
       case ViewUserScreen.routeName:
-        return MaterialPageRoute(builder: (_) => const ViewUserScreen());
+        var data = routeSettings.arguments as String;
+        return MaterialPageRoute(
+            builder: (_) => ViewUserScreen(
+                  id: data,
+                ));
       case AddItem.routeName:
         return MaterialPageRoute(builder: (_) => const AddItem());
       case ManageItem.routeName:

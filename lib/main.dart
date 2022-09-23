@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:url_strategy/url_strategy.dart';
 import 'package:web_basmati/config/config_export.dart';
 import 'package:web_basmati/screens/authentication/bloc/auth_bloc.dart';
 import 'package:web_basmati/screens/items/bloc/items_bloc.dart';
@@ -11,7 +10,7 @@ import 'package:web_basmati/shared/shared_bloc/shared_bloc.dart';
 import 'screens/home/bloc/home_bloc.dart';
 
 void main() {
-  setPathUrlStrategy();
+  //setPathUrlStrategy();
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider<NavigationBloc>(create: (context) => NavigationBloc()),
@@ -31,7 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Basmati Control Panel',
+      title: 'Ibtesamati Control Panel',
       theme: lightTheme,
       home: const Splash(),
       onGenerateRoute: AppRouter.onGenerateRoute,
