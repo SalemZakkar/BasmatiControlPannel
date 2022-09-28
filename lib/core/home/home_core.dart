@@ -101,8 +101,8 @@ class HomeCore {
       UserData userData, String password) async {
     FormData data = FormData.fromMap({
       "fullName": userData.fullName,
-      "phone": userData.phone,
-      "type": userData.type
+      "phone": "+966${userData.phone}",
+      "type": userData.type,
     });
     if (password.isNotEmpty) {
       data.fields.add(MapEntry("password", password));
@@ -110,6 +110,7 @@ class HomeCore {
     ResponseModel res = await ApiEngine.request(
       requestMethod: RequestMethod.post,
       path: EndPoints.user,
+      data: data,
       options: Options(
         headers: <String, String>{
           "Authorization": "Bearer ${await AuthStore.getToken()}",

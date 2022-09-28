@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:web_basmati/screens/home/add_user.dart';
 
 class TableTitle extends StatefulWidget {
   const TableTitle({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class _TableTitleState extends State<TableTitle> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      width: size.width * 0.8,
+      width: size.width * 0.85,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       height: 60,
       child: Row(
@@ -52,9 +53,10 @@ class _TableTitleState extends State<TableTitle> {
             ),
           ),
           Container(
-            width: 100,
+            width: 120,
             height: 50,
             alignment: Alignment.centerRight,
+            // color: Colors.red,
             padding: const EdgeInsets.only(right: 20),
             child: Text(
               "نوع الإشتراك",
@@ -64,7 +66,22 @@ class _TableTitleState extends State<TableTitle> {
           ),
           Expanded(
             child: Container(
-              alignment: Alignment.center,
+              alignment: Alignment.centerLeft,
+              child: InkWell(
+                onTap: () => Navigator.pushNamed(context, AddUser.routeName),
+                child: Container(
+                  width: 100,
+                  height: 40,
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(5)),
+                  alignment: Alignment.center,
+                  child: const Text(
+                    "إضافة مستخدم",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
             ),
           ),
         ],

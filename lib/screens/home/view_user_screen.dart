@@ -11,6 +11,7 @@ import 'package:web_basmati/shared/widget/error_notification.dart';
 import 'package:web_basmati/shared/widget/text_field_holder.dart';
 
 import '../../shared/widget/flush_messages.dart';
+import '../notification/notification_screen.dart';
 
 class ViewUserScreen extends StatefulWidget {
   static const routeName = '/viewUser';
@@ -37,9 +38,15 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
         title: const Text("معلومات المستخدم"),
         toolbarHeight: 70,
         actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, NotificationScreen.routeName,
+                    arguments: <String>[widget.id]);
+              },
+              icon: const Icon(Icons.notifications)),
           DeleteButton(
             id: widget.id,
-          )
+          ),
         ],
       ),
       body: MultiBlocListener(

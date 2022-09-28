@@ -3,9 +3,11 @@ import 'package:web_basmati/screens/authentication/authentication_screen.dart';
 import 'package:web_basmati/screens/authentication/repository/repository.dart';
 import 'package:web_basmati/screens/home/home_screen.dart';
 import 'package:web_basmati/screens/items/items_screen.dart';
+import 'package:web_basmati/screens/subscriptions/subscriptions_screen.dart';
 import 'package:web_basmati/screens_export.dart';
 
 import '../../helper/app_assets.dart';
+import '../notification/notification_screen.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({Key? key}) : super(key: key);
@@ -42,129 +44,190 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             topLeft: Radius.circular(22.0),
             bottomLeft: Radius.circular(22.0),
           )),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 150,
-            width: 240,
-            alignment: Alignment.center,
-            child: Image.asset(
-              AppAssets.appIcon,
-              width: 80,
-              height: 80,
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              // context
-              //     .read<NavigationBloc>()
-              //     .add(const NavigationChangeEvent(i: 0));
-              // pressed(0);
-              Navigator.pushNamedAndRemoveUntil(
-                  context, HomeScreen.routeName, (route) => false);
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: 45,
-              width: 220,
-              padding: const EdgeInsets.only(right: 15),
-              decoration: BoxDecoration(
-                  color: buttonColor[states[0]],
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      bottomLeft: Radius.circular(15))),
-              alignment: Alignment.centerRight,
-              child: Text("معلومات المستخدمين",
-                  style:
-                      TextStyle(fontSize: 20, color: buttonColor[!states[0]])),
-            ),
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          InkWell(
-            onTap: () {
-              // context
-              //     .read<NavigationBloc>()
-              //     .add(const NavigationChangeEvent(i: 1));
-              // pressed(1);
-              Navigator.pushNamedAndRemoveUntil(
-                  context, ItemsScreen.routeName, (route) => false);
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: 45,
-              width: 220,
-              padding: const EdgeInsets.only(right: 15),
-              decoration: BoxDecoration(
-                  color: buttonColor[states[1]],
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      bottomLeft: Radius.circular(15))),
-              alignment: Alignment.centerRight,
-              child: Text("إدارة المنتجات",
-                  style:
-                      TextStyle(fontSize: 20, color: buttonColor[!states[1]])),
-            ),
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          InkWell(
-            onTap: () {
-              // context
-              //     .read<NavigationBloc>()
-              //     .add(const NavigationChangeEvent(i: 2));
-              // pressed(2);
-              Navigator.pushNamedAndRemoveUntil(
-                  context, AppInfoScreen.routeName, (route) => false);
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: 45,
-              width: 220,
-              padding: const EdgeInsets.only(right: 15),
-              decoration: BoxDecoration(
-                  color: buttonColor[states[2]],
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      bottomLeft: Radius.circular(15))),
-              alignment: Alignment.centerRight,
-              child: Text("معلومات من نحن",
-                  style:
-                      TextStyle(fontSize: 20, color: buttonColor[!states[2]])),
-            ),
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          const Spacer(),
-          InkWell(
-            onTap: () async {
-              AuthRepository.logout();
-              Navigator.pushNamedAndRemoveUntil(
-                  context, AuthenticationScreen.routeName, (route) => false);
-            },
-            child: Container(
-              padding: const EdgeInsets.only(right: 15),
-              width: 200,
-              height: 40,
-              color: Theme.of(context).primaryColor,
-              alignment: Alignment.centerRight,
-              child: Text(
-                "تسجيل الخروج",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1!
-                    .copyWith(fontSize: 19),
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 150,
+              width: 240,
+              alignment: Alignment.center,
+              child: Image.asset(
+                AppAssets.appIcon,
+                width: 80,
+                height: 80,
               ),
             ),
-          ),
-          const SizedBox(
-            height: 20,
-          )
-        ],
+            InkWell(
+              onTap: () {
+                // context
+                //     .read<NavigationBloc>()
+                //     .add(const NavigationChangeEvent(i: 0));
+                // pressed(0);
+                Navigator.pushNamedAndRemoveUntil(
+                    context, HomeScreen.routeName, (route) => false);
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: 45,
+                width: 220,
+                padding: const EdgeInsets.only(right: 15),
+                decoration: BoxDecoration(
+                    color: buttonColor[states[0]],
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        bottomLeft: Radius.circular(15))),
+                alignment: Alignment.centerRight,
+                child: Text("إدارة المستخدمين",
+                    style: TextStyle(
+                        fontSize: 20, color: buttonColor[!states[0]])),
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            InkWell(
+              onTap: () {
+                // context
+                //     .read<NavigationBloc>()
+                //     .add(const NavigationChangeEvent(i: 1));
+                // pressed(1);
+                Navigator.pushNamedAndRemoveUntil(
+                    context, ItemsScreen.routeName, (route) => false);
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: 45,
+                width: 220,
+                padding: const EdgeInsets.only(right: 15),
+                decoration: BoxDecoration(
+                    color: buttonColor[states[1]],
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        bottomLeft: Radius.circular(15))),
+                alignment: Alignment.centerRight,
+                child: Text("إدارة المنتجات",
+                    style: TextStyle(
+                        fontSize: 20, color: buttonColor[!states[1]])),
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            InkWell(
+              onTap: () {
+                // context
+                //     .read<NavigationBloc>()
+                //     .add(const NavigationChangeEvent(i: 1));
+                // pressed(1);
+                Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    SubscriptionsScreen.routeName,
+                    arguments: <String>[],
+                    (route) => false);
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: 45,
+                width: 220,
+                padding: const EdgeInsets.only(right: 15),
+                decoration: BoxDecoration(
+                    color: buttonColor[states[1]],
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        bottomLeft: Radius.circular(15))),
+                alignment: Alignment.centerRight,
+                child: Text("إدارة الإشتراكات",
+                    style: TextStyle(
+                        fontSize: 20, color: buttonColor[!states[1]])),
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            InkWell(
+              onTap: () {
+                // context
+                //     .read<NavigationBloc>()
+                //     .add(const NavigationChangeEvent(i: 2));
+                // pressed(2);
+                Navigator.pushNamedAndRemoveUntil(
+                    context, AppInfoScreen.routeName, (route) => false);
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: 45,
+                width: 220,
+                padding: const EdgeInsets.only(right: 15),
+                decoration: BoxDecoration(
+                    color: buttonColor[states[2]],
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        bottomLeft: Radius.circular(15))),
+                alignment: Alignment.centerRight,
+                child: Text("معلومات من نحن",
+                    style: TextStyle(
+                        fontSize: 20, color: buttonColor[!states[2]])),
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            InkWell(
+              onTap: () {
+                // context
+                //     .read<NavigationBloc>()
+                //     .add(const NavigationChangeEvent(i: 1));
+                // pressed(1);
+                Navigator.pushNamed(context, NotificationScreen.routeName,
+                    arguments: <String>[]);
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: 45,
+                width: 220,
+                padding: const EdgeInsets.only(right: 15),
+                decoration: BoxDecoration(
+                    color: buttonColor[states[1]],
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        bottomLeft: Radius.circular(15))),
+                alignment: Alignment.centerRight,
+                child: Text("ارسال اشعارات",
+                    style: TextStyle(
+                        fontSize: 20, color: buttonColor[!states[1]])),
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            InkWell(
+              onTap: () async {
+                AuthRepository.logout();
+                Navigator.pushNamedAndRemoveUntil(
+                    context, AuthenticationScreen.routeName, (route) => false);
+              },
+              child: Container(
+                padding: const EdgeInsets.only(right: 15),
+                width: 200,
+                height: 45,
+                color: Theme.of(context).primaryColor,
+                alignment: Alignment.centerRight,
+                child: Text(
+                  "تسجيل الخروج",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText1!
+                      .copyWith(fontSize: 19),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            )
+          ],
+        ),
       ),
     );
   }
