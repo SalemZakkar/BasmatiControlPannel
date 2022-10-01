@@ -11,8 +11,7 @@ part 'subscription_state.dart';
 
 class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   SubscriptionBloc() : super(SubscriptionInitial()) {
-    on<SubscriptionEvent>((event, emit) {
-    });
+    on<SubscriptionEvent>((event, emit) {});
     on<AddSubscription>(_addSubscription);
     on<EditSubscription>(_editSubscription);
     on<DeleteSubscription>(_deleteSubscription);

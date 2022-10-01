@@ -15,6 +15,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      borderRadius: BorderRadius.circular(22),
       onTap: () => Navigator.pushNamed(
           context, ManageSubscriptionScreen.routeName,
           arguments: widget.data),

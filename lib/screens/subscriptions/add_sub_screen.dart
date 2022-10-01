@@ -62,6 +62,7 @@ class _AddSubScreenState extends State<AddSubScreen> {
           toolbarHeight: 70,
         ),
         body: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           constraints: const BoxConstraints.expand(),
           child: Form(
             key: globalKey,
@@ -147,8 +148,9 @@ class _AddSubScreenState extends State<AddSubScreen> {
                         ),
                         subtitle: TextFieldHolder(
                           width: 270,
-                          height: 100,
+                          height: 50,
                           child: DropdownButtonFormField(
+                            focusColor: Colors.transparent,
                             onChanged: (v) {
                               currentDType = dTypes.indexOf(v.toString());
                               debugPrint(currentDType.toString());
@@ -279,7 +281,7 @@ class _AddSubScreenState extends State<AddSubScreen> {
                                             price: double.parse(price.text),
                                             description: des.text,
                                             discount:
-                                                setDiscount(lowPrice.text) ?? 0,
+                                                double.tryParse(lowPrice.text),
                                             duration: SubDuration(
                                                 unit: t[currentDType],
                                                 value: double.parse(

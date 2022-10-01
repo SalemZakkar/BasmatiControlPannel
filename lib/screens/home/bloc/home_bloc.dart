@@ -3,6 +3,10 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_basmati/screens/home/model/model_export.dart';
+import 'package:web_basmati/screens/home/model/order_details_model.dart';
+import 'package:web_basmati/screens/home/model/order_logs_model.dart';
+import 'package:web_basmati/screens/home/model/subscription_details_model.dart';
+import 'package:web_basmati/screens/home/model/subscription_log_model.dart';
 import 'package:web_basmati/screens/home/model/user_model.dart';
 
 import '../../../core/home/home_core.dart';
@@ -26,6 +30,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<AddUserEvent>(_addUser);
     on<EditUserEvent>(_userEdit);
     on<DeleteUserEvent>(_deleteUser);
+    on<Subscribe>(_subscribe);
+    on<GetOrderLogs>(_getOrderLog);
+    on<GetOrderDetails>(_getOrderDetails);
   }
   _getUser(GetUserEvent event, Emitter<HomeState> emit) async {
     emit(GetUserInfoByState(
@@ -110,6 +117,71 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(GetUserInfoState(
         stateStatusUserInfo: StateStatus().copyWith(inProgress: true)));
     ResponseModel res = await HomeCore.addUser(event.data, event.password);
+    if (res.success) {
+      emit(GetUserInfoState(
+          stateStatusUserInfo: StateStatus().copyWith(success: true)));
+    } else {
+      emit(GetUserInfoState(
+          stateStatusUserInfo: StateStatus()
+              .copyWith(failure: true, errorMessage: res.errorCode)));
+    }
+  }
+
+  _getOrderLog(GetOrderLogs event, Emitter<HomeState> emit) async {
+    emit(GetUserInfoState(
+        stateStatusUserInfo: StateStatus().copyWith(inProgress: true)));
+    ResponseModel res =
+        await HomeCore.getOrderLogs(event.skip, event.limit, event.sub);
+    if (res.success) {
+      late OrderLogsModel model;
+      late SubscriptionLogModel sModel;
+      if (event.sub) {
+        sModel = SubscriptionLogModel.fromJson(res.res?.data);
+        emit(GetUserInfoState(
+            stateStatusUserInfo: StateStatus(success: true),
+            subscriptionLogModel: sModel));
+      } else {
+        model = OrderLogsModel.fromJson(jsonDecode(res.res?.data));
+        emit(GetUserInfoState(
+            stateStatusUserInfo: StateStatus(success: true),
+            orderLogsModel: model));
+      }
+    } else {
+      emit(GetUserInfoState(
+          stateStatusUserInfo: StateStatus()
+              .copyWith(failure: true, errorMessage: res.errorCode)));
+    }
+  }
+
+  _getOrderDetails(GetOrderDetails event, Emitter<HomeState> emit) async {
+    emit(GetUserInfoState(
+        stateStatusUserInfo: StateStatus().copyWith(inProgress: true)));
+    ResponseModel res = await HomeCore.getOrderDetails(event.id);
+    if (res.success) {
+      late SubscriptionDetailsModel model;
+      late OrderDetailsModel oModel;
+      if (event.sub) {
+        model = SubscriptionDetailsModel.fromJson(jsonDecode(res.res?.data));
+        emit(GetUserInfoState(
+            stateStatusUserInfo: StateStatus(success: true),
+            subscriptionDetailsData: model.data));
+      } else {
+        oModel = OrderDetailsModel.fromJson(res.res?.data);
+        emit(GetUserInfoState(
+            stateStatusUserInfo: StateStatus(success: true),
+            orderDetailsData: oModel.data));
+      }
+    } else {
+      emit(GetUserInfoState(
+          stateStatusUserInfo: StateStatus()
+              .copyWith(failure: true, errorMessage: res.errorCode)));
+    }
+  }
+
+  _subscribe(Subscribe event, Emitter<HomeState> emit) async {
+    emit(GetUserInfoState(
+        stateStatusUserInfo: StateStatus().copyWith(inProgress: true)));
+    ResponseModel res = await HomeCore.subscribe(event.id, event.sId);
     if (res.success) {
       emit(GetUserInfoState(
           stateStatusUserInfo: StateStatus().copyWith(success: true)));

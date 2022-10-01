@@ -54,10 +54,9 @@ class _ManageSubscriptionScreenState extends State<ManageSubscriptionScreen> {
       currentDType = t.indexOf(data.duration!.unit!);
       price = TextEditingController(text: data.price?.toStringAsFixed(2));
       active = data.isActive!;
-      if (data.discount != 0) {
-        lowPrice = TextEditingController(
-            text: calcDiscount(data.discount!.toDouble(), price.text)
-                .toStringAsFixed(2));
+      if (data.discount != 0 && data.discount != null) {
+        lowPrice =
+            TextEditingController(text: data.discount?.toStringAsFixed(2));
       }
       loaded = true;
     }
@@ -96,6 +95,7 @@ class _ManageSubscriptionScreenState extends State<ManageSubscriptionScreen> {
           ],
         ),
         body: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           constraints: const BoxConstraints.expand(),
           child: Form(
             key: globalKey,
@@ -196,8 +196,9 @@ class _ManageSubscriptionScreenState extends State<ManageSubscriptionScreen> {
                         ),
                         subtitle: TextFieldHolder(
                           width: 270,
-                          height: 100,
+                          height: 50,
                           child: DropdownButtonFormField(
+                            focusColor: Colors.transparent,
                             onChanged: (v) {
                               currentDType = dTypes.indexOf(v.toString());
                               debugPrint(currentDType.toString());
@@ -330,7 +331,7 @@ class _ManageSubscriptionScreenState extends State<ManageSubscriptionScreen> {
                                             price: double.parse(price.text),
                                             description: des.text,
                                             discount:
-                                                setDiscount(lowPrice.text) ?? 0,
+                                                double.tryParse(lowPrice.text),
                                             duration: SubDuration(
                                                 unit: t[currentDType],
                                                 value: double.parse(

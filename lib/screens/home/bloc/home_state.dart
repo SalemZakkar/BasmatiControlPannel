@@ -4,9 +4,17 @@ abstract class HomeState extends Equatable {
   final StateStatus stateStatusUserInfo;
   final UserInfoType userInfoTypeList;
   final UserData? userData;
+  final SubscriptionLogModel? subscriptionLogModel;
+  final SubscriptionDetailsData? subscriptionDetailsData;
+  final OrderLogsModel? orderLogsModel;
+  final OrderDetailsData? orderDetailsData;
   const HomeState(
       {required this.stateStatusUserInfo,
       required this.userInfoTypeList,
+      this.subscriptionLogModel,
+      this.subscriptionDetailsData,
+      this.orderDetailsData,
+      this.orderLogsModel,
       this.userData});
 
   @override
@@ -25,8 +33,12 @@ class GetUserInfoByState extends HomeState {
 }
 
 class GetUserInfoState extends HomeState {
-  GetUserInfoState({
-    required super.stateStatusUserInfo,
-    super.userData,
-  }) : super(userInfoTypeList: UserInfoType());
+  GetUserInfoState(
+      {required super.stateStatusUserInfo,
+      super.userData,
+      super.orderDetailsData,
+      super.orderLogsModel,
+      super.subscriptionDetailsData,
+      super.subscriptionLogModel})
+      : super(userInfoTypeList: UserInfoType());
 }

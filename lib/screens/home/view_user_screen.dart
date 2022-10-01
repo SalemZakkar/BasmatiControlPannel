@@ -6,6 +6,8 @@ import 'package:web_basmati/screens/home/bloc/home_bloc.dart';
 import 'package:web_basmati/screens/home/model/user_model.dart';
 import 'package:web_basmati/screens/home/widget/block_button.dart';
 import 'package:web_basmati/screens/home/widget/delete_button.dart';
+import 'package:web_basmati/screens/home/widget/order_log/order_log_widget.dart';
+import 'package:web_basmati/screens/home/widget/sub_log/sub_log_widget.dart';
 import 'package:web_basmati/shared/shared_bloc/shared_bloc.dart';
 import 'package:web_basmati/shared/widget/error_notification.dart';
 import 'package:web_basmati/shared/widget/text_field_holder.dart';
@@ -31,6 +33,7 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
   TextEditingController password = TextEditingController();
   bool loaded = false;
   GlobalKey<FormState> globalKey = GlobalKey();
+  bool activeWidget = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -304,7 +307,63 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
                                 ),
                               )
                             ],
-                          )
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Radio(
+                                  value: activeWidget,
+                                  groupValue: false,
+                                  onChanged: (value) {
+                                    if (activeWidget) {
+                                      setState(() {
+                                        activeWidget = false;
+                                      });
+                                    }
+                                  }),
+                              Text(
+                                "سجلات الشراء",
+                                style: Theme.of(context).textTheme.headline1,
+                              ),
+                              const SizedBox(
+                                width: 50,
+                              ),
+                              Radio(
+                                  value: activeWidget,
+                                  groupValue: true,
+                                  onChanged: (value) {
+                                    if (!activeWidget) {
+                                      setState(() {
+                                        activeWidget = !activeWidget;
+                                      });
+                                    }
+                                  }),
+                              Text(
+                                "سجلات الاشتراكات",
+                                style: Theme.of(context).textTheme.headline1,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: activeWidget
+                                ? SubscriptionLogWidget(
+                                    id: widget.id,
+                                  )
+                                : OrderLogWidget(id: widget.id),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
                         ],
                       ),
                     ),

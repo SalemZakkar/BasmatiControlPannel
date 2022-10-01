@@ -24,7 +24,7 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
         skip: skip,
         limit: limit,
         phone: phone.text,
-        sub: currentUser));
+        sub: currentUser == 0 ? null : currentUser - 1));
   }
 
   void refresh() {

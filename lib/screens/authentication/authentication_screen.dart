@@ -33,7 +33,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         constraints: const BoxConstraints.expand(),
         alignment: Alignment.center,
         child: Container(
-            height: 410,
+            height: 430,
             width: 400,
             decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
@@ -149,6 +149,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                           "يجب أن تحتوي احرف و أرقام و رموز");
                                       return "كلمة المرور لا يمكن استخدامها";
                                     }
+                                    return null;
                                   },
                                   decoration: InputDecoration(
                                       fillColor: Theme.of(context)

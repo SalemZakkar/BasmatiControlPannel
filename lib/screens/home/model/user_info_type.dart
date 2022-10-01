@@ -1,5 +1,5 @@
-/// totalRecords : 7
-/// data : [{"type":"Customer","fullName":"Miss Grace Little","phone":"+8867252878","email":"Eddie54@example.org","isActive":true,"isVerified":{"email":false,"phone":false},"id":"632ae4abda6d9ddb17b47ee2"},{"type":"Customer","fullName":"Dr. Tiffany O'Kon","phone":"+966123456789","email":"Jonas98@example.org","isActive":true,"isVerified":{"email":false,"phone":false},"id":"6325c58f895c8c1c976ccecf"},{"type":"Customer","fullName":"لللا لل اا","phone":"+501234566","isActive":true,"isVerified":{"email":false,"phone":false},"id":"6324b5c85247ad8198bcb427"},{"type":"Customer","fullName":"ااال للغ لققا","phone":"+9660000000004","email":"Customer2@Basmati.com","isActive":true,"isVerified":{"email":false,"phone":false},"id":"000000020000000000000004"},{"type":"Customer","fullName":"Customer 1","phone":"+9660000000003","email":"Customer1@Basmati.com","isActive":true,"isVerified":{"email":false,"phone":false},"id":"000000020000000000000003"},{"type":"Admin","fullName":"Admin 2","phone":"+9660000000002","email":"admin2@Basmati.com","isActive":true,"isVerified":{"email":false,"phone":false},"id":"000000020000000000000002"},{"type":"Admin","fullName":"Admin","phone":"+9660000000001","email":"admin1@Basmati.com","isActive":true,"isVerified":{"email":false,"phone":false},"id":"000000020000000000000001"}]
+/// totalRecords : 3
+/// data : [{"type":"Customer","fullName":"Shelley Hoeger","phone":"+7545939744","email":"Nedra_Lindgren96@gmail.com","isActive":true,"isVerified":{"email":false,"phone":false},"subscription":{"id":"000000040000000000000002","name":"اشتراك لمدة 3 أشهر","expiresAt":"2022-12-30T13:33:45.518Z"},"id":"632c77ffe918a82087941a57"},{"type":"Customer","fullName":"Dr. Lila Rogahn","phone":"+4052018035","email":"Albert_Mills62@gmail.com","isActive":true,"isVerified":{"email":false,"phone":false},"subscription":{"id":"000000040000000000000002","name":"اشتراك لمدة 3 أشهر","expiresAt":"2022-12-30T13:36:13.974Z"},"id":"632c77ffe918a82087941a53"},{"type":"Customer","fullName":"Dr. Tiffany O'Kon","phone":"+966123456789","email":"Jonas98@example.org","isActive":true,"isVerified":{"email":false,"phone":false},"subscription":{"id":"000000040000000000000000","name":"jjjjjjj","expiresAt":"2022-12-29T15:29:11.553Z"},"id":"6325c58f895c8c1c976ccecf"}]
 
 class UserInfoType {
   UserInfoType({
@@ -43,12 +43,13 @@ class UserInfoType {
 }
 
 /// type : "Customer"
-/// fullName : "Miss Grace Little"
-/// phone : "+8867252878"
-/// email : "Eddie54@example.org"
+/// fullName : "Shelley Hoeger"
+/// phone : "+7545939744"
+/// email : "Nedra_Lindgren96@gmail.com"
 /// isActive : true
 /// isVerified : {"email":false,"phone":false}
-/// id : "632ae4abda6d9ddb17b47ee2"
+/// subscription : {"id":"000000040000000000000002","name":"اشتراك لمدة 3 أشهر","expiresAt":"2022-12-30T13:33:45.518Z"}
+/// id : "632c77ffe918a82087941a57"
 
 class UserMainData {
   UserMainData({
@@ -58,6 +59,7 @@ class UserMainData {
     String? email,
     bool? isActive,
     IsVerified? isVerified,
+    Subscription? subscription,
     String? id,
   }) {
     _type = type;
@@ -66,6 +68,7 @@ class UserMainData {
     _email = email;
     _isActive = isActive;
     _isVerified = isVerified;
+    _subscription = subscription;
     _id = id;
   }
 
@@ -78,6 +81,9 @@ class UserMainData {
     _isVerified = json['isVerified'] != null
         ? IsVerified.fromJson(json['isVerified'])
         : null;
+    _subscription = json['subscription'] != null
+        ? Subscription.fromJson(json['subscription'])
+        : null;
     _id = json['id'];
   }
   String? _type;
@@ -86,6 +92,7 @@ class UserMainData {
   String? _email;
   bool? _isActive;
   IsVerified? _isVerified;
+  Subscription? _subscription;
   String? _id;
   UserMainData copyWith({
     String? type,
@@ -94,6 +101,7 @@ class UserMainData {
     String? email,
     bool? isActive,
     IsVerified? isVerified,
+    Subscription? subscription,
     String? id,
   }) =>
       UserMainData(
@@ -103,6 +111,7 @@ class UserMainData {
         email: email ?? _email,
         isActive: isActive ?? _isActive,
         isVerified: isVerified ?? _isVerified,
+        subscription: subscription ?? _subscription,
         id: id ?? _id,
       );
   String? get type => _type;
@@ -111,6 +120,7 @@ class UserMainData {
   String? get email => _email;
   bool? get isActive => _isActive;
   IsVerified? get isVerified => _isVerified;
+  Subscription? get subscription => _subscription;
   String? get id => _id;
 
   Map<String, dynamic> toJson() {
@@ -123,7 +133,56 @@ class UserMainData {
     if (_isVerified != null) {
       map['isVerified'] = _isVerified?.toJson();
     }
+    if (_subscription != null) {
+      map['subscription'] = _subscription?.toJson();
+    }
     map['id'] = _id;
+    return map;
+  }
+}
+
+/// id : "000000040000000000000002"
+/// name : "اشتراك لمدة 3 أشهر"
+/// expiresAt : "2022-12-30T13:33:45.518Z"
+
+class Subscription {
+  Subscription({
+    String? id,
+    String? name,
+    String? expiresAt,
+  }) {
+    _id = id;
+    _name = name;
+    _expiresAt = expiresAt;
+  }
+
+  Subscription.fromJson(dynamic json) {
+    _id = json['id'];
+    _name = json['name'];
+    _expiresAt = json['expiresAt'];
+  }
+  String? _id;
+  String? _name;
+  String? _expiresAt;
+  Subscription copyWith({
+    String? id,
+    String? name,
+    String? expiresAt,
+  }) =>
+      Subscription(
+        id: id ?? _id,
+        name: name ?? _name,
+        expiresAt: expiresAt ?? _expiresAt,
+      );
+  String? get id => _id;
+  String? get name => _name;
+  String? get expiresAt => _expiresAt;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['id'] = _id;
+    map['name'] = _name;
+    map['expiresAt'] = _expiresAt;
     return map;
   }
 }

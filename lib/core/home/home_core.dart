@@ -26,17 +26,20 @@ class HomeCore {
   static Future<ResponseModel> getUser(
       int skip, int limit, String? phone, int type, int? sub) async {
     List<String> typeStr = ["Customer", "Admin"];
+
     Map<String, dynamic> query = {
       "skip": skip,
       "limit": limit,
       "type": typeStr[type],
       "total": true
     };
+
     if (phone != null && phone.isNotEmpty) {
       query["phone"] = phone;
     }
     if (sub != null) {
-      //TODO SUB TYPE
+      List<bool> states = [true, false];
+      query["subscribed"] = states[sub];
     }
     ResponseModel res = await ApiEngine.request(
       requestMethod: RequestMethod.get,
@@ -130,6 +133,44 @@ class HomeCore {
         },
       ),
     );
+    return res;
+  }
+
+  static Future<ResponseModel> getOrderLogs(
+      int skip, int limit, bool isSubscription) async {
+    ResponseModel res = await ApiEngine.request(
+        requestMethod: RequestMethod.get,
+        path: EndPoints.logs,
+        queryParameters: {
+          "skip": skip,
+          "limit": limit,
+          "total": true,
+          "isSubscription": isSubscription
+        },
+        options: Options(headers: {
+          "Authorization": "Bearer ${await AuthStore.getToken()}",
+        }));
+    return res;
+  }
+
+  static Future<ResponseModel> getOrderDetails(String id) async {
+    ResponseModel res = await ApiEngine.request(
+        requestMethod: RequestMethod.get,
+        path: "${EndPoints.logs}/$id",
+        options: Options(headers: {
+          "Authorization": "Bearer ${await AuthStore.getToken()}",
+        }));
+    return res;
+  }
+
+  static Future<ResponseModel> subscribe(String id, String sId) async {
+    ResponseModel res = await ApiEngine.request(
+        requestMethod: RequestMethod.post,
+        path: EndPoints.logs,
+        data: {"id": id, "sId": sId, "type": "Cash"},
+        options: Options(headers: {
+          "Authorization": "Bearer ${await AuthStore.getToken()}",
+        }));
     return res;
   }
 }

@@ -60,3 +60,27 @@ class AddUserEvent extends HomeEvent {
   final String password;
   const AddUserEvent({required this.data, required this.password});
 }
+
+class GetOrderLogs extends HomeEvent {
+  final bool sub;
+  final int skip, limit;
+  const GetOrderLogs(
+      {required this.limit, required this.skip, required this.sub});
+}
+
+class GetOrderDetails extends HomeEvent {
+  final String id;
+  final bool sub;
+  const GetOrderDetails({required this.id, required this.sub});
+}
+
+class GetSubscriptionDetails extends HomeEvent {
+  final String id;
+  const GetSubscriptionDetails({required this.id});
+}
+
+class Subscribe extends HomeEvent {
+  final String id;
+  final String sId;
+  const Subscribe({required this.id, required this.sId});
+}

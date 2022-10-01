@@ -52,7 +52,9 @@ class SubscriptionCore {
     data['price'] = subscriptionData.price;
     data['isActive'] = true;
     data['duration'] = subscriptionData.duration?.toJson();
-    data['discount'] = subscriptionData.discount;
+    if (subscriptionData.discount != null) {
+      data['discount'] = subscriptionData.discount;
+    }
 
     ResponseModel res = await ApiEngine.request(
         requestMethod: RequestMethod.post,
