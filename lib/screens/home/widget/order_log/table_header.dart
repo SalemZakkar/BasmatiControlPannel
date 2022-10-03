@@ -51,5 +51,3 @@ class _TableHeaderState extends State<TableHeader> {
     );
   }
 }
-
-

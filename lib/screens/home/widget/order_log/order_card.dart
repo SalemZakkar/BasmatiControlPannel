@@ -59,7 +59,8 @@ class _OrderLogCardState extends State<OrderLogCard> {
           const Spacer(),
           IconButton(
               onPressed: () {
-                Navigator.pushNamed(context, ViewOrderDetails.routeName);
+                Navigator.pushNamed(context, ViewOrderDetails.routeName,
+                    arguments: widget.data.id);
               },
               icon: Icon(
                 Icons.arrow_forward,

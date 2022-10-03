@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:web_basmati/screens/navigation_screen/drawer.dart';
-import 'package:web_basmati/screens/subscriptions/add_sub_screen.dart';
 import 'package:web_basmati/screens/subscriptions/bloc/subscription_bloc.dart';
-import 'package:web_basmati/screens/subscriptions/widget/subscription_card.dart';
 import 'package:web_basmati/shared/widget/error_notification.dart';
+
 import 'model/subscription_model.dart';
 
 class ChooseSubscription extends StatefulWidget {
@@ -109,8 +107,8 @@ class _ChooseSubscriptionState extends State<ChooseSubscription> {
                     return InkWell(
                       borderRadius: BorderRadius.circular(22),
                       onTap: () {
-                        Navigator.pop<String>(context , data[index].id);
-                      } ,
+                        Navigator.pop<String>(context, data[index].id);
+                      },
                       child: Container(
                         width: 180,
                         height: 180,
@@ -124,7 +122,8 @@ class _ChooseSubscriptionState extends State<ChooseSubscription> {
                           style: Theme.of(context)
                               .textTheme
                               .bodyText2!
-                              .copyWith(fontSize: 20, overflow: TextOverflow.clip),
+                              .copyWith(
+                                  fontSize: 20, overflow: TextOverflow.clip),
                           textAlign: TextAlign.center,
                         ),
                       ),

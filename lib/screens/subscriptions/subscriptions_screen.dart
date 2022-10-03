@@ -5,6 +5,7 @@ import 'package:web_basmati/screens/subscriptions/add_sub_screen.dart';
 import 'package:web_basmati/screens/subscriptions/bloc/subscription_bloc.dart';
 import 'package:web_basmati/screens/subscriptions/widget/subscription_card.dart';
 import 'package:web_basmati/shared/widget/error_notification.dart';
+
 import 'model/subscription_model.dart';
 
 class SubscriptionsScreen extends StatefulWidget {
@@ -65,8 +66,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
               loading = false;
             }
             if (state.success == true) {
-              List<SubscriptionData> raw =
-                  state.subscriptionModel?.data ?? [];
+              List<SubscriptionData> raw = state.subscriptionModel?.data ?? [];
 
               setState(() {
                 for (int i = 0; i < raw.length; i++) {
@@ -122,8 +122,8 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                   return SizedBox(
                     child: loading
                         ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
+                            child: CircularProgressIndicator(),
+                          )
                         : null,
                   );
                 },

@@ -166,7 +166,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             stateStatusUserInfo: StateStatus(success: true),
             subscriptionDetailsData: model.data));
       } else {
-        oModel = OrderDetailsModel.fromJson(res.res?.data);
+        oModel = OrderDetailsModel.fromJson(jsonDecode(res.res?.data));
         emit(GetUserInfoState(
             stateStatusUserInfo: StateStatus(success: true),
             orderDetailsData: oModel.data));

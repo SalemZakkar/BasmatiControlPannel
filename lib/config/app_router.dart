@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:web_basmati/screens/home/add_user.dart';
 import 'package:web_basmati/screens/home/view_order_details.dart';
 import 'package:web_basmati/screens/home/view_user_screen.dart';
-import 'package:web_basmati/screens/home/widget/choose_subscription.dart';
 import 'package:web_basmati/screens/items/add_item.dart';
 import 'package:web_basmati/screens/items/items_screen.dart';
 import 'package:web_basmati/screens/items/manage_item.dart';
@@ -33,7 +32,6 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const ViewUserScreen());
       case AddItem.routeName:
         return MaterialPageRoute(builder: (_) => const AddItem());
-        //TODO h
       case ManageItem.routeName:
         ManageItem data = routeSettings.arguments as ManageItem;
         return MaterialPageRoute(
@@ -54,11 +52,9 @@ class AppRouter {
         return MaterialPageRoute(
             builder: (_) => const ManageSubscriptionScreen());
       case ChooseSubscription.routeName:
-        return MaterialPageRoute(
-            builder: (_) => const ChooseSubscription());
-        case ViewOrderDetails.routeName:
-          return MaterialPageRoute(
-              builder: (_) => const ViewOrderDetails());
+        return MaterialPageRoute(builder: (_) => const ChooseSubscription());
+      case ViewOrderDetails.routeName:
+        return MaterialPageRoute(builder: (_) => const ViewOrderDetails());
       default:
         return null;
     }
@@ -75,10 +71,10 @@ class AppRouter {
         const ManageSubscriptionScreen(),
     AuthenticationScreen.routeName: (context) => const AuthenticationScreen(),
     ViewUserScreen.routeName: (context) => const ViewUserScreen(),
-    AddItem.routeName : (context) => const AddItem(),
-    AppInfoScreen.routeName : (context) => const AppInfoScreen(),
-    ChooseSubscription.routeName : (context) => const ChooseSubscription(),
-    ViewOrderDetails.routeName : (context) => const ViewOrderDetails(),
+    AddItem.routeName: (context) => const AddItem(),
+    AppInfoScreen.routeName: (context) => const AppInfoScreen(),
+    ChooseSubscription.routeName: (context) => const ChooseSubscription(),
+    ViewOrderDetails.routeName: (context) => const ViewOrderDetails(),
     "/splash": (context) => const Splash()
   };
 }

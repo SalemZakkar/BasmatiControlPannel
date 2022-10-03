@@ -15,11 +15,13 @@ class _ProductCardState extends State<ProductCard> {
       width: MediaQuery.of(context).size.width * 0.5,
       height: 120,
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(22)
-      ),
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(22)),
       child: ListTile(
-        title: Text("الاسم" , style: Theme.of(context).textTheme.headline1,),
+        title: Text(
+          "الاسم",
+          style: Theme.of(context).textTheme.headline1,
+        ),
       ),
     );
   }

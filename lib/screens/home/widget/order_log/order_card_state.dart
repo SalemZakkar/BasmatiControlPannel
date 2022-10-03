@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:web_basmati/helper/payment_enum.dart';
-import 'package:web_basmati/screens/home/model/order_logs_model.dart';
-import 'package:web_basmati/screens/home/view_order_details.dart';
+import 'package:web_basmati/screens/home/model/order_details_model.dart';
 import 'package:web_basmati/shared/widget/date_time.dart';
 
 class OrderCardState extends StatefulWidget {
-  const OrderCardState({Key? key}) : super(key: key);
+  final ProductsOrder productOrder;
+  const OrderCardState({Key? key, required this.productOrder})
+      : super(key: key);
 
   @override
   State<OrderCardState> createState() => _OrderCardStateState();
 }
 
 class _OrderCardStateState extends State<OrderCardState> {
+  bool used = false;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -29,9 +30,9 @@ class _OrderCardStateState extends State<OrderCardState> {
             height: 50,
             alignment: Alignment.centerRight,
             child: Text(
-              'getDate(format.parse(widget.data.createdAt!.toString()))',
+              widget.productOrder.name?.toString() ?? "",
               style:
-              Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
+                  Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
             ),
           ),
           Container(
@@ -39,9 +40,9 @@ class _OrderCardStateState extends State<OrderCardState> {
             height: 50,
             alignment: Alignment.centerRight,
             child: Text(
-              "widget.data.productsCount!.toString()",
+              widget.productOrder.qty?.toString() ?? "",
               style:
-              Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
+                  Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
             ),
           ),
           Container(
@@ -49,9 +50,9 @@ class _OrderCardStateState extends State<OrderCardState> {
             height: 50,
             alignment: Alignment.centerRight,
             child: Text(
-              'getPaymentStatus(widget.data.status?.status ?? "")',
+              "${widget.productOrder.price.toString()} ر.س",
               style:
-              Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
+                  Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
             ),
           ),
           Container(
@@ -59,24 +60,27 @@ class _OrderCardStateState extends State<OrderCardState> {
             height: 50,
             alignment: Alignment.centerRight,
             child: Text(
-              'getPaymentStatus(widget.data.status?.status ?? "")',
+              widget.productOrder.warrantyExpiresAt == null
+                  ? "-"
+                  : getDate(DateFormat("yyyy-MM-dd").parse(
+                      widget.productOrder.warrantyExpiresAt?.toString() ?? "")),
               style:
-              Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
+                  Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
             ),
           ),
           const Spacer(),
-          IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, ViewOrderDetails.routeName);
-              },
-              icon: Icon(
-                Icons.arrow_forward,
-                color: Theme.of(context).primaryColor,
-              )),
+          Checkbox(
+              value: used,
+              onChanged: (value) {
+                setState(() {
+                  used = !used;
+                });
+              }),
           const SizedBox(
             width: 30,
           ),
         ],
       ),
-    );  }
+    );
+  }
 }
