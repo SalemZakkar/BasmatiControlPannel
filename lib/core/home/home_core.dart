@@ -137,7 +137,7 @@ class HomeCore {
   }
 
   static Future<ResponseModel> getOrderLogs(
-      int skip, int limit, bool isSubscription) async {
+      int skip, int limit, bool isSubscription, String id) async {
     ResponseModel res = await ApiEngine.request(
         requestMethod: RequestMethod.get,
         path: EndPoints.logs,
@@ -145,6 +145,7 @@ class HomeCore {
           "skip": skip,
           "limit": limit,
           "total": true,
+          "user": id,
           "isSubscription": isSubscription
         },
         options: Options(headers: {
@@ -167,7 +168,7 @@ class HomeCore {
     ResponseModel res = await ApiEngine.request(
         requestMethod: RequestMethod.post,
         path: EndPoints.logs,
-        data: {"id": id, "sId": sId, "type": "Cash"},
+        data: {"user": id, "subscription": sId, "type": "Cash"},
         options: Options(headers: {
           "Authorization": "Bearer ${await AuthStore.getToken()}",
         }));

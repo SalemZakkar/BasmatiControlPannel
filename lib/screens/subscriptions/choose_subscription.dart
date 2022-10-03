@@ -7,15 +7,15 @@ import 'package:web_basmati/screens/subscriptions/widget/subscription_card.dart'
 import 'package:web_basmati/shared/widget/error_notification.dart';
 import 'model/subscription_model.dart';
 
-class SubscriptionsScreen extends StatefulWidget {
-  static const String routeName = "/subscriptions";
-  const SubscriptionsScreen({Key? key}) : super(key: key);
+class ChooseSubscription extends StatefulWidget {
+  static const String routeName = "/chooseSubscription";
+  const ChooseSubscription({Key? key}) : super(key: key);
 
   @override
-  State<SubscriptionsScreen> createState() => _SubscriptionsScreenState();
+  State<ChooseSubscription> createState() => _ChooseSubscriptionState();
 }
 
-class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
+class _ChooseSubscriptionState extends State<ChooseSubscription> {
   int skip = 0, limit = 10;
   int? end;
   List<SubscriptionData> data = [];
@@ -65,8 +65,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
               loading = false;
             }
             if (state.success == true) {
-              List<SubscriptionData> raw =
-                  state.subscriptionModel?.data ?? [];
+              List<SubscriptionData> raw = state.subscriptionModel?.data ?? [];
 
               setState(() {
                 for (int i = 0; i < raw.length; i++) {
@@ -82,16 +81,8 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
         )
       ],
       child: Scaffold(
-        drawer: const DrawerWidget(),
         appBar: AppBar(
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, AddSubScreen.routeName);
-                },
-                icon: const Icon(Icons.add))
-          ],
-          title: const Text("إدارة باقات الإشتراك "),
+          title: const Text("إختر باقة اشتراك "),
           toolbarHeight: 70,
         ),
         body: BlocBuilder<SubscriptionBloc, SubscriptionState>(
@@ -115,15 +106,35 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                     maxCrossAxisExtent: 180),
                 itemBuilder: (context, index) {
                   if (index < data.length) {
-                    return SubscriptionCard(
-                      data: data[index],
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(22),
+                      onTap: () {
+                        Navigator.pop<String>(context , data[index].id);
+                      } ,
+                      child: Container(
+                        width: 180,
+                        height: 180,
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).cardColor,
+                            borderRadius: BorderRadius.circular(22)),
+                        alignment: Alignment.center,
+                        child: Text(
+                          data[index].name.toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2!
+                              .copyWith(fontSize: 20, overflow: TextOverflow.clip),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     );
                   }
                   return SizedBox(
                     child: loading
                         ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
+                            child: CircularProgressIndicator(),
+                          )
                         : null,
                   );
                 },

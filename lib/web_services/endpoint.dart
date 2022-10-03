@@ -7,6 +7,7 @@ class EndPoints {
   static const item = '/product';
   static const about = '/about';
   static const notification = '/notification';
+  static const userMine = '/user/mine';
 //
   static const imagePath = '/static';
   static const user = '/user';

@@ -21,6 +21,8 @@ String errorParse(String codeError) {
     case "0626":
       // return "Can not access because account has been deactivated.";
       return "تم حظر حسابك";
+    case "1421":
+      return "المستخدم مشترك بالفعل";
     case "0627":
       // return "User profile is incomplete.";
       return "ملف تعريف المستخدم غير مكتمل.";

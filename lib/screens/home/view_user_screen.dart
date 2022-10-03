@@ -17,8 +17,7 @@ import '../notification/notification_screen.dart';
 
 class ViewUserScreen extends StatefulWidget {
   static const routeName = '/viewUser';
-  final String id;
-  const ViewUserScreen({Key? key, required this.id}) : super(key: key);
+  const ViewUserScreen({Key? key}) : super(key: key);
 
   @override
   State<ViewUserScreen> createState() => _ViewUserScreenState();
@@ -36,6 +35,7 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
   bool activeWidget = false;
   @override
   Widget build(BuildContext context) {
+    String id = ModalRoute.of(context)?.settings.arguments as String;
     return Scaffold(
       appBar: AppBar(
         title: const Text("معلومات المستخدم"),
@@ -44,11 +44,11 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
           IconButton(
               onPressed: () {
                 Navigator.pushNamed(context, NotificationScreen.routeName,
-                    arguments: <String>[widget.id]);
+                    arguments: <String>[id]);
               },
               icon: const Icon(Icons.notifications)),
           DeleteButton(
-            id: widget.id,
+            id: id,
           ),
         ],
       ),
@@ -57,7 +57,7 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
             BlocListener<SharedBloc, SharedState>(
               listener: (context, state) {
                 if (state is ResetUserState) {
-                  homeBloc.add(GetUserData(id: widget.id));
+                  homeBloc.add(GetUserData(id: id));
                 }
               },
             ),
@@ -88,7 +88,7 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
             bloc: homeBloc,
             builder: (context, state) {
               if (state is HomeInitial) {
-                homeBloc.add(GetUserData(id: widget.id));
+                homeBloc.add(GetUserData(id: id));
               }
               if (state.stateStatusUserInfo.inProgress == true) {
                 loaded = false;
@@ -99,7 +99,7 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
                 return errorNotification(
                     context, state.stateStatusUserInfo.errorMessage ?? "999",
                     () {
-                  homeBloc.add(GetUserData(id: widget.id));
+                  homeBloc.add(GetUserData(id: id));
                 });
               } else if (state.stateStatusUserInfo.success == true) {
                 if (!loaded) {
@@ -262,8 +262,7 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
                                 alignment: Alignment.centerRight,
                                 width: 270,
                                 child: BlockButton(
-                                    id: widget.id,
-                                    active: state.userData!.isActive!),
+                                    id: id, active: state.userData!.isActive!),
                               ),
                               Container(
                                 alignment: Alignment.centerRight,
@@ -281,7 +280,7 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
                                               saveBloc.add(EditUserEvent(
                                                   password: password.text,
                                                   data: UserData(
-                                                    id: widget.id,
+                                                    id: id,
                                                     phone: phone.text,
                                                     fullName: name.text,
                                                   )));
@@ -311,55 +310,61 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
                           const SizedBox(
                             height: 20,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Radio(
-                                  value: activeWidget,
-                                  groupValue: false,
-                                  onChanged: (value) {
-                                    if (activeWidget) {
-                                      setState(() {
-                                        activeWidget = false;
-                                      });
-                                    }
-                                  }),
-                              Text(
-                                "سجلات الشراء",
-                                style: Theme.of(context).textTheme.headline1,
-                              ),
-                              const SizedBox(
-                                width: 50,
-                              ),
-                              Radio(
-                                  value: activeWidget,
-                                  groupValue: true,
-                                  onChanged: (value) {
-                                    if (!activeWidget) {
-                                      setState(() {
-                                        activeWidget = !activeWidget;
-                                      });
-                                    }
-                                  }),
-                              Text(
-                                "سجلات الاشتراكات",
-                                style: Theme.of(context).textTheme.headline1,
-                              ),
-                            ],
+                          Visibility(
+                            visible: state.userData?.type == "Customer",
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Radio(
+                                    value: activeWidget,
+                                    groupValue: false,
+                                    onChanged: (value) {
+                                      if (activeWidget) {
+                                        setState(() {
+                                          activeWidget = false;
+                                        });
+                                      }
+                                    }),
+                                Text(
+                                  "سجلات الشراء",
+                                  style: Theme.of(context).textTheme.headline1,
+                                ),
+                                const SizedBox(
+                                  width: 50,
+                                ),
+                                Radio(
+                                    value: activeWidget,
+                                    groupValue: true,
+                                    onChanged: (value) {
+                                      if (!activeWidget) {
+                                        setState(() {
+                                          activeWidget = !activeWidget;
+                                        });
+                                      }
+                                    }),
+                                Text(
+                                  "سجلات الاشتراكات",
+                                  style: Theme.of(context).textTheme.headline1,
+                                ),
+                              ],
+                            ),
                           ),
                           const SizedBox(
                             height: 20,
                           ),
-                          Align(
-                            alignment: Alignment.center,
-                            child: activeWidget
-                                ? SubscriptionLogWidget(
-                                    id: widget.id,
-                                  )
-                                : OrderLogWidget(id: widget.id),
+                          Visibility(
+                            visible: state.userData?.type == "Customer",
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: activeWidget
+                                  ? SubscriptionLogWidget(
+                                      id: id,
+                                    )
+                                  : OrderLogWidget(id: id),
+                            ),
                           ),
                           const SizedBox(
                             height: 20,

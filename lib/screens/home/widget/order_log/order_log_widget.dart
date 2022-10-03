@@ -30,7 +30,7 @@ class _OrderLogWidgetState extends State<OrderLogWidget> {
     if (limit - 10 >= (end ?? double.infinity)) {
       return;
     }
-    bloc.add(GetOrderLogs(limit: limit, skip: skip, sub: false));
+    bloc.add(GetOrderLogs(limit: limit, skip: skip, sub: false, id: widget.id));
   }
 
   void reset() {
@@ -105,8 +105,8 @@ class _OrderLogWidgetState extends State<OrderLogWidget> {
           ),
           Container(
             width: MediaQuery.of(context).size.width * 0.9,
-            height: MediaQuery.of(context).size.height - 150,
-            padding: const EdgeInsets.symmetric(vertical: 20),
+            height: MediaQuery.of(context).size.height - 170,
+            padding: const EdgeInsets.symmetric(vertical: 10),
             decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(22)),

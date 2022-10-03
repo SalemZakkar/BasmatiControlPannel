@@ -6,7 +6,6 @@ import 'package:web_basmati/screens/items/bloc/items_bloc.dart';
 import 'package:web_basmati/screens/items/manage_item.dart';
 import 'package:web_basmati/screens/navigation_screen/drawer.dart';
 import 'package:web_basmati/shared/shared_bloc/shared_bloc.dart';
-
 import '../../helper/helper_export.dart';
 import '../../shared/widget/error_notification.dart';
 import '../../shared/widget/text_field_holder.dart';
@@ -107,7 +106,7 @@ class _ItemsScreenState extends State<ItemsScreen> {
               child: Container(
                 width: 130,
                 decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(15)),
+                BoxDecoration(borderRadius: BorderRadius.circular(15)),
                 alignment: Alignment.center,
                 child: InkWell(
                   onTap: () {
@@ -313,23 +312,23 @@ class _ItemsScreenState extends State<ItemsScreen> {
                   end = null;
                   return Expanded(
                       child: errorNotification(context, state.code, () {
-                    itemsBloc.add(ItemGetEvent(skip: "0", limit: "10"));
-                  }));
+                        itemsBloc.add(ItemGetEvent(skip: "0", limit: "10"));
+                      }));
                 }
                 return Expanded(
                   child: GridView.builder(
                       controller: scrollController,
                       padding:
-                          EdgeInsets.symmetric(horizontal: size.width * 0.1),
+                      EdgeInsets.symmetric(horizontal: size.width * 0.1),
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
                       itemCount: items.length + 1,
                       gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              mainAxisExtent: 200),
+                      const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          crossAxisSpacing: 10.0,
+                          mainAxisSpacing: 10.0,
+                          mainAxisExtent: 200),
                       itemBuilder: (context, index) {
                         if (index < items.length) {
                           return GestureDetector(
@@ -340,8 +339,8 @@ class _ItemsScreenState extends State<ItemsScreen> {
                                     isSuccess: true);
                                 Navigator.pushNamed(
                                     context, ManageItem.routeName,
-                                    arguments:
-                                        ManageItem(id: items[index].id ?? ""));
+                                    arguments: ManageItem(
+                                        id: items[index].id ?? ""));
                               },
                               child: MyCustomCategoryWidget(
                                 data: items[index],
@@ -349,8 +348,8 @@ class _ItemsScreenState extends State<ItemsScreen> {
                         } else {
                           return loading
                               ? const Center(
-                                  child: CircularProgressIndicator(),
-                                )
+                            child: CircularProgressIndicator(),
+                          )
                               : const SizedBox();
                         }
                       }),

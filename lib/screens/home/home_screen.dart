@@ -6,7 +6,6 @@ import 'package:web_basmati/screens/home/widget/user_info_card.dart';
 import 'package:web_basmati/screens/navigation_screen/drawer.dart';
 import 'package:web_basmati/shared/shared_bloc/shared_bloc.dart';
 import 'package:web_basmati/shared/widget/error_notification.dart';
-
 import 'bloc/home_bloc.dart';
 import 'model/user_info_type.dart';
 

@@ -6,12 +6,16 @@ import 'package:web_basmati/screens/authentication/persistance/storage.dart';
 import 'package:web_basmati/screens/home/home_screen.dart';
 import 'package:web_basmati/web_services/api_engine/api_engine.dart';
 
+import '../shared/shared_bloc/shared_bloc.dart';
+
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
 
   @override
   State<Splash> createState() => _SplashState();
 }
+
+SharedBloc sharedBloc = SharedBloc();
 
 class _SplashState extends State<Splash> {
   void startApp(BuildContext context) async {

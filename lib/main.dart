@@ -36,8 +36,10 @@ class MyApp extends StatelessWidget {
       home: const Splash(),
       onGenerateRoute: AppRouter.onGenerateRoute,
       routes: AppRouter.routes,
+      navigatorKey: AppRouter.navigatorKey,
       builder: (context, child) {
         final MediaQueryData data = MediaQuery.of(context);
+
         return Directionality(
             textDirection: TextDirection.rtl,
             child: MediaQuery(

@@ -130,13 +130,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   _getOrderLog(GetOrderLogs event, Emitter<HomeState> emit) async {
     emit(GetUserInfoState(
         stateStatusUserInfo: StateStatus().copyWith(inProgress: true)));
-    ResponseModel res =
-        await HomeCore.getOrderLogs(event.skip, event.limit, event.sub);
+    ResponseModel res = await HomeCore.getOrderLogs(
+        event.skip, event.limit, event.sub, event.id);
     if (res.success) {
       late OrderLogsModel model;
       late SubscriptionLogModel sModel;
       if (event.sub) {
-        sModel = SubscriptionLogModel.fromJson(res.res?.data);
+        sModel = SubscriptionLogModel.fromJson(jsonDecode(res.res?.data));
         emit(GetUserInfoState(
             stateStatusUserInfo: StateStatus(success: true),
             subscriptionLogModel: sModel));

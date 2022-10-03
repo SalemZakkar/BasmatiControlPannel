@@ -7,7 +7,6 @@ import 'package:web_basmati/screens/app_information/widget/phone_card.dart';
 import 'package:web_basmati/screens/navigation_screen/drawer.dart';
 import 'package:web_basmati/shared/shared_bloc/shared_bloc.dart';
 import 'package:web_basmati/shared/widget/error_notification.dart';
-
 import '../../shared/widget/custom_button_widget.dart';
 import '../../shared/widget/flush_messages.dart';
 import '../../shared/widget/text_field_holder.dart';
@@ -28,7 +27,7 @@ class _AppInfoScreenState extends State<AppInfoScreen> {
   List<String> phones = [];
   TextEditingController phone = TextEditingController();
   TextEditingController about = TextEditingController();
-  TextEditingController insta = TextEditingController();
+  TextEditingController instagram = TextEditingController();
   bool loaded = false;
   @override
   void dispose() {
@@ -62,7 +61,7 @@ class _AppInfoScreenState extends State<AppInfoScreen> {
                 phones = state.appInfoModel.data?.whatsApp ?? [];
                 about = TextEditingController(
                     text: state.appInfoModel.data?.description ?? "");
-                insta = TextEditingController(
+                instagram = TextEditingController(
                     text: state.appInfoModel.data?.instagram);
                 loaded = true;
               }
@@ -132,7 +131,7 @@ class _AppInfoScreenState extends State<AppInfoScreen> {
                               subtitle: TextFieldHolder(
                                   height: 220,
                                   width:
-                                      MediaQuery.of(context).size.width * 0.8,
+                                  MediaQuery.of(context).size.width * 0.8,
                                   child: TextFormField(
                                     controller: about,
                                     textAlign: TextAlign.start,
@@ -176,7 +175,9 @@ class _AppInfoScreenState extends State<AppInfoScreen> {
                                         child: TextFormField(
                                           controller: phone,
                                           onEditingComplete: () {
-                                            if (phone.text.trim().isNotEmpty) {
+                                            if (phone.text
+                                                .trim()
+                                                .isNotEmpty) {
                                               setState(() {
                                                 phones.add(phone.text);
                                                 phone.clear();
@@ -219,7 +220,7 @@ class _AppInfoScreenState extends State<AppInfoScreen> {
                                         width: 240,
                                         height: 45,
                                         child: TextFormField(
-                                          controller: insta,
+                                          controller: instagram,
                                           textDirection: TextDirection.ltr,
                                           textAlign: TextAlign.start,
                                           decoration: const InputDecoration(
@@ -246,25 +247,28 @@ class _AppInfoScreenState extends State<AppInfoScreen> {
                                   child: loading
                                       ? const CircularProgressIndicator()
                                       : MyCustomButton(
-                                          height: 40,
-                                          borderRadius: 22,
-                                          color: Theme.of(context).primaryColor,
-                                          width: 100,
-                                          customWidget: Text(
-                                            "حفظ",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1,
-                                          ),
-                                          function: () {
-                                            appInfoBloc.add(AppInfoUpdateEvent(
-                                                data: AppInfoData(
-                                                    description: about.text,
-                                                    phones: phones,
-                                                    instagram:
-                                                        insta.text.trim())));
-                                          },
-                                        )),
+                                    height: 40,
+                                    borderRadius: 22,
+                                    color:
+                                    Theme.of(context).primaryColor,
+                                    width: 100,
+                                    customWidget: Text(
+                                      "حفظ",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1,
+                                    ),
+                                    function: () {
+                                      appInfoBloc.add(
+                                          AppInfoUpdateEvent(
+                                              data: AppInfoData(
+                                                  description:
+                                                  about.text,
+                                                  phones: phones,
+                                                  instagram: instagram.text
+                                                      .trim())));
+                                    },
+                                  )),
                               const SizedBox(
                                 width: 20,
                               ),
@@ -272,11 +276,12 @@ class _AppInfoScreenState extends State<AppInfoScreen> {
                                 padding: const EdgeInsets.only(top: 0),
                                 child: (mainError
                                     ? Text(
-                                        error,
-                                        style: TextStyle(
-                                            color: Theme.of(context).errorColor,
-                                            fontSize: 17),
-                                      )
+                                  error,
+                                  style: TextStyle(
+                                      color:
+                                      Theme.of(context).errorColor,
+                                      fontSize: 17),
+                                )
                                     : const SizedBox()),
                               )
                             ],

@@ -52,7 +52,11 @@ class _UserInfoCardState extends State<UserInfoCard> {
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: 20),
             child: Text(
-              "2222/22/22",
+              widget.data.type == "Customer"
+                  ? true
+                      ? "2222/22/22"
+                      : "-"
+                  : "-",
               style:
                   Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 20),
             ),
@@ -63,7 +67,11 @@ class _UserInfoCardState extends State<UserInfoCard> {
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: 20),
             child: Text(
-              widget.data.subscription != null ? "مشترك" : "غير مشترك",
+              widget.data.type == "Customer"
+                  ? widget.data.subscription != null
+                      ? "مشترك"
+                      : "غير مشترك"
+                  : "-",
               style:
                   Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 20),
             ),

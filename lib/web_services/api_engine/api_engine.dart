@@ -3,6 +3,11 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:web_basmati/config/config_export.dart';
+import 'package:web_basmati/core/auth/auth_core.dart';
+import 'package:web_basmati/screens/authentication/models/token_data.dart';
+import 'package:web_basmati/screens/authentication/persistance/storage.dart';
+import 'package:web_basmati/screens/screens_export.dart';
 import 'package:web_basmati/web_services/api_engine/response_model.dart';
 
 import '../../helper/error_data.dart';
@@ -11,14 +16,12 @@ import '../web_connection.dart';
 import 'enum.dart';
 
 class ApiEngine {
+  static List errorCodes = ["0601", "0622", "0624", "0626"];
   static void initDio() {
     myDio = Dio(
       BaseOptions(
         receiveTimeout: 12000,
         sendTimeout: 12000,
-        validateStatus: (code) {
-          return (code ?? 500) <= 500;
-        },
         headers: {
           "Accept": "*/*",
           "Connection": "keep-alive",
@@ -36,6 +39,49 @@ class ApiEngine {
         request: true,
       ),
     );
+    myDio.interceptors.add(InterceptorsWrapper(
+      onError: (error, handler) async {
+        try {
+          ErrorData errorData =
+              ErrorData.fromJson(jsonDecode(error.response?.data));
+          if (errorData.code == "0603" && await AuthStore.getPhone() != null) {
+            await AuthStore.clear();
+            AppRouter.navigatorKey.currentState!.pushNamedAndRemoveUntil(
+                AuthenticationScreen.routeName, (route) => false);
+            handler.next(error);
+          } else if (errorData.code == "0623") {
+            ResponseModel res = await AuthCore.loginStore();
+            if (res.success) {
+              await AuthStore.setToken(
+                  TokenData.fromJson(jsonDecode(res.res?.data)));
+              handler.resolve(await retry(error.requestOptions));
+            } else {
+              handler.next(error);
+            }
+          } else if (errorCodes.contains(errorData.code)) {
+            await AuthStore.clear();
+            AppRouter.navigatorKey.currentState!.pushNamedAndRemoveUntil(
+                AuthenticationScreen.routeName, (route) => false);
+            handler.next(error);
+          } else if (errorData.code == "0621") {
+            await AuthCore.refreshToken();
+            handler.resolve(await retry(error.requestOptions));
+          } else {
+            handler.next(error);
+          }
+        } catch (e) {
+          handler.next(error);
+        }
+      },
+    ));
+  }
+
+  static Future<Response> retry(RequestOptions options) async {
+    final option = Options(method: options.method, headers: options.headers);
+    return myDio.request(options.path,
+        options: option,
+        queryParameters: options.queryParameters,
+        data: options.data);
   }
 
   static Future<ResponseModel> request<T>(

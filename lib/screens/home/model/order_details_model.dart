@@ -47,7 +47,7 @@ class OrderDetailsData {
     num? discount,
     num? subTotal,
     num? totalPrice,
-    List<Products>? products,
+    List<ProductsOrder>? products,
     String? createdAt,
     String? updatedAt,
   }) {
@@ -77,7 +77,7 @@ class OrderDetailsData {
     if (json['products'] != null) {
       _products = [];
       json['products'].forEach((v) {
-        _products?.add(Products.fromJson(v));
+        _products?.add(ProductsOrder.fromJson(v));
       });
     }
     _createdAt = json['createdAt'];
@@ -89,7 +89,7 @@ class OrderDetailsData {
   num? _discount;
   num? _subTotal;
   num? _totalPrice;
-  List<Products>? _products;
+  List<ProductsOrder>? _products;
   String? _createdAt;
   String? _updatedAt;
   OrderDetailsData copyWith({
@@ -99,7 +99,7 @@ class OrderDetailsData {
     num? discount,
     num? subTotal,
     num? totalPrice,
-    List<Products>? products,
+    List<ProductsOrder>? products,
     String? createdAt,
     String? updatedAt,
   }) =>
@@ -120,7 +120,7 @@ class OrderDetailsData {
   num? get discount => _discount;
   num? get subTotal => _subTotal;
   num? get totalPrice => _totalPrice;
-  List<Products>? get products => _products;
+  List<ProductsOrder>? get products => _products;
   String? get createdAt => _createdAt;
   String? get updatedAt => _updatedAt;
 
@@ -149,8 +149,8 @@ class OrderDetailsData {
 /// price : 1000
 /// warrantyExpiresAt : "2022-12-30T13:25:53.768Z"
 
-class Products {
-  Products({
+class ProductsOrder {
+  ProductsOrder({
     String? id,
     String? name,
     num? qty,
@@ -164,7 +164,7 @@ class Products {
     _warrantyExpiresAt = warrantyExpiresAt;
   }
 
-  Products.fromJson(dynamic json) {
+  ProductsOrder.fromJson(dynamic json) {
     _id = json['id'];
     _name = json['name'];
     _qty = json['qty'];
@@ -176,14 +176,14 @@ class Products {
   num? _qty;
   num? _price;
   String? _warrantyExpiresAt;
-  Products copyWith({
+  ProductsOrder copyWith({
     String? id,
     String? name,
     num? qty,
     num? price,
     String? warrantyExpiresAt,
   }) =>
-      Products(
+      ProductsOrder(
         id: id ?? _id,
         name: name ?? _name,
         qty: qty ?? _qty,

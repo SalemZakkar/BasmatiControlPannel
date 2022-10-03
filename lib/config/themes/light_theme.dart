@@ -11,6 +11,7 @@ ThemeData lightTheme = ThemeData(
   primarySwatch: Colors.blue,
   progressIndicatorTheme: ProgressIndicatorThemeData(color: primaryColor),
   appBarTheme: AppBarTheme(
+    elevation: 0,
     titleTextStyle: TextStyle(
         color: primaryColor,
         fontSize: 25,

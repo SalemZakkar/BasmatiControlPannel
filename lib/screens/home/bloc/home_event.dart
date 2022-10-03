@@ -64,8 +64,12 @@ class AddUserEvent extends HomeEvent {
 class GetOrderLogs extends HomeEvent {
   final bool sub;
   final int skip, limit;
+  final String id;
   const GetOrderLogs(
-      {required this.limit, required this.skip, required this.sub});
+      {required this.limit,
+      required this.skip,
+      required this.sub,
+      required this.id});
 }
 
 class GetOrderDetails extends HomeEvent {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:web_basmati/helper/payment_enum.dart';
 import 'package:web_basmati/screens/home/model/order_logs_model.dart';
+import 'package:web_basmati/screens/home/view_order_details.dart';
 import 'package:web_basmati/shared/widget/date_time.dart';
 
 class OrderLogCard extends StatefulWidget {
@@ -32,7 +33,7 @@ class _OrderLogCardState extends State<OrderLogCard> {
             child: Text(
               getDate(format.parse(widget.data.createdAt!.toString())),
               style:
-                  Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 22),
+                  Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
             ),
           ),
           Container(
@@ -42,7 +43,7 @@ class _OrderLogCardState extends State<OrderLogCard> {
             child: Text(
               widget.data.productsCount!.toString(),
               style:
-                  Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 22),
+                  Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
             ),
           ),
           Container(
@@ -52,12 +53,14 @@ class _OrderLogCardState extends State<OrderLogCard> {
             child: Text(
               getPaymentStatus(widget.data.status?.status ?? ""),
               style:
-                  Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 22),
+                  Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
             ),
           ),
           const Spacer(),
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, ViewOrderDetails.routeName);
+              },
               icon: Icon(
                 Icons.arrow_forward,
                 color: Theme.of(context).primaryColor,

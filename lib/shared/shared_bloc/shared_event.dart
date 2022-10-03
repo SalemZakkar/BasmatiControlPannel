@@ -15,3 +15,5 @@ class GetUsersSharedEvent extends SharedEvent {
 class ResetUserEvent extends SharedEvent {}
 
 class ResetItemEvent extends SharedEvent {}
+
+class ResetAppEvent extends SharedEvent {}
