@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:web_basmati/screens/home/widget/product_card.dart';
 
+import 'widget/items_widget.dart';
+import 'widget/order_log/order_card_state.dart';
+import 'widget/order_log/table_header_state.dart';
+
+
 class ViewOrderDetails extends StatefulWidget {
   static const String routeName = "/viewOrder";
+
   const ViewOrderDetails({Key? key}) : super(key: key);
 
   @override
@@ -36,10 +42,8 @@ class _ViewOrderDetailsState extends State<ViewOrderDetails> {
                     ),
                     Text(
                       "مدفوع",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2!
-                          .copyWith(fontSize: 20),
+                      style:
+                          Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 20),
                     )
                   ],
                 ),
@@ -58,10 +62,8 @@ class _ViewOrderDetailsState extends State<ViewOrderDetails> {
                     ),
                     Text(
                       "نقدا",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2!
-                          .copyWith(fontSize: 20),
+                      style:
+                          Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 20),
                     )
                   ],
                 ),
@@ -80,14 +82,22 @@ class _ViewOrderDetailsState extends State<ViewOrderDetails> {
                     ),
                     Text(
                       "1234",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2!
-                          .copyWith(fontSize: 20),
+                      style:
+                          Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 20),
                     )
                   ],
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: 3,
+                  itemBuilder: (context, index) {
+                    return myCustomItemsWidget(context,'state',"time");
+                  },
+                ),
                 Align(
                   alignment: Alignment.centerRight,
                   child: Text(
@@ -95,14 +105,19 @@ class _ViewOrderDetailsState extends State<ViewOrderDetails> {
                     style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 25),
                   ),
                 ),
-                const SizedBox(height: 20,),
-                //TODO HOSSAM
-                const Align(
-                  alignment: Alignment.centerRight,
-                  child: ProductCard()
+                const SizedBox(
+                  height: 20,
                 ),
+                //TODO HOSSAM
+                const TableHeaderState(),
+                 Container(
+                     decoration: BoxDecoration(
+                       color: Theme.of(context).cardColor,
+                       borderRadius: BorderRadius.circular(15.0),
+                     ),
+                     child: const OrderCardState()),
+                // const Align(alignment: Alignment.centerRight, child: ProductCard()),
               ],
-
             ),
           ),
         ));
